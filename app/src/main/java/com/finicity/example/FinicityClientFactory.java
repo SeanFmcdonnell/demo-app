@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.NotEmpty;
 
+import javax.ws.rs.client.Client;
+
 /**
  * Created by jhutchins on 9/23/15.
  */
@@ -26,12 +28,14 @@ public class FinicityClientFactory {
     @Setter(onMethod = @__(@JsonProperty))
     private String finicityAppKey;
 
-    public FinicityClient build() {
-        FinicityClient client = FinicityClient.builder()
+    public FinicityClient build(Environment env, Client client) {
+        FinicityClient finicity = FinicityClient.builder()
+                .client(client)
                 .finicityAppKey(getFinicityAppKey())
                 .partnerId(getPartnerId())
                 .partnerSecret(getPartnerSecret())
                 .build();
-        return client;
+        env.jersey().register(finicity);
+        return finicity;
     }
 }

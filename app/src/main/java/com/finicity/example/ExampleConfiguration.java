@@ -2,8 +2,10 @@ package com.finicity.example;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.dropwizard.Configuration;
+import io.dropwizard.client.JerseyClientConfiguration;
 import lombok.Getter;
 import lombok.Setter;
+import org.glassfish.jersey.client.JerseyClientBuilder;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -11,10 +13,15 @@ import javax.validation.constraints.NotNull;
 /**
  * Created by jhutchins on 9/23/15.
  */
-public class ApplicationConfiguration extends Configuration {
+public class ExampleConfiguration extends Configuration {
     @Valid
     @NotNull
     @Getter(onMethod = @__(@JsonProperty("finicityClient")))
     @Setter(onMethod = @__(@JsonProperty("finicityClient")))
     private FinicityClientFactory finicityClient = new FinicityClientFactory();
+
+    @Valid
+    @NotNull
+    @Getter(onMethod = @__(@JsonProperty("httpClient")))
+    private JerseyClientConfiguration jerseyClientConfiguration = new JerseyClientConfiguration();
 }
