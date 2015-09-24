@@ -7,6 +7,7 @@ import com.fasterxml.jackson.jaxrs.xml.JacksonJaxbXMLProvider;
 import com.finicity.client.models.Access;
 import com.finicity.client.models.Credentials;
 import com.finicity.client.models.Institutions;
+import com.finicity.client.models.LoginForm;
 import lombok.Builder;
 import lombok.Setter;
 import lombok.ToString;
@@ -72,6 +73,17 @@ public class FinicityClient {
                 .header("Finicity-App-Key", finicityAppKey)
                 .header("Finicity-App-Token", token)
                 .get(Institutions.class);
+    }
+
+    public Object getInstitutionLogin(int institutionId) {
+        if (token == null) {
+            getToken();
+        }
+        return target.path("/v1/institutions/" + institutionId + "/loginForm")
+                .request(MediaType.APPLICATION_XML_TYPE)
+                .header("Finicity-App-Key", finicityAppKey)
+                .header("Finicity-App-Token", token)
+                .get(LoginForm.class);
     }
 
     @Setter
