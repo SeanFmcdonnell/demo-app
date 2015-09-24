@@ -21,3 +21,9 @@ angular.module('example').run(function($rootScope) {
     };
 
 });
+
+$(document).ready(function() {
+  $('[data-toggle=offcanvas]').click(function() {
+    $('.row-offcanvas').toggleClass('active');
+  });
+});
