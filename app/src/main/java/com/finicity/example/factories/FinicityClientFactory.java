@@ -1,4 +1,4 @@
-package com.finicity.example;
+package com.finicity.example.factories;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.finicity.client.FinicityClient;
