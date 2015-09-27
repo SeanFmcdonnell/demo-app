@@ -1,4 +1,8 @@
-angular.module('example', ['ui.bootstrap','ui.utils','ngRoute','ngAnimate']);
+var host = 'http://localhost:8080';
+
+var example = angular.module('example', ['ui.bootstrap', 'ui.utils', 'ngRoute', 'ngAnimate', 'institutions']);
+
+angular.module('example').constant('host', host);
 
 angular.module('example').config(function($routeProvider) {
 
@@ -19,7 +23,6 @@ angular.module('example').run(function($rootScope) {
             this.$apply(fn);
         }
     };
-
 });
 
 $(document).ready(function() {
@@ -30,12 +33,12 @@ $(document).ready(function() {
 
 function onSignIn(googleUser) {
   var id_token = googleUser.getAuthResponse().id_token;
-  console.log(id_token);
   var xhr = new XMLHttpRequest();
-  xhr.open('POST', 'http://localhost:8080/google/signin');
+  xhr.open('POST', host + '/google/signin');
   xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
   xhr.onload = function() {
-    console.log('Signed in as: ' + xhr.responseText);
+    var token = xhr.responseText;
+    angular.element('html').injector().get('institutions').setToken(token);
   };
   xhr.send(id_token);
 }

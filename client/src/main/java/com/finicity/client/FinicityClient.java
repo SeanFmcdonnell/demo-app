@@ -1,5 +1,6 @@
 package com.finicity.client;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -18,6 +19,7 @@ import java.beans.ConstructorProperties;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 /**
  * Created by jhutchins on 9/23/15.
@@ -28,13 +30,13 @@ public class FinicityClient {
     private final Credentials creds;
     private final String finicityAppKey;
     private final WebTarget target;
+    private final XmlMapper xmlMapper = new XmlMapper();
 
     private String token = null;
     private Instant tokenExpiration = Instant.now();
 
     @ConstructorProperties({"partnerId", "partnerSecret", "finicityAppKey", "client"})
     private FinicityClient(String partnerId, String partnerSecret, String finicityAppKey, Client client) {
-        XmlMapper xmlMapper = new XmlMapper();
         xmlMapper.findAndRegisterModules();
         JacksonJaxbXMLProvider provider = new JacksonJaxbXMLProvider();
         provider.setMapper(xmlMapper);
@@ -88,6 +90,32 @@ public class FinicityClient {
                 .header("Finicity-App-Key", finicityAppKey)
                 .header("Finicity-App-Token", token)
                 .get(LoginForm.class);
+    }
+
+    public Accounts discoverAccounts(String customerId, int institutionId, List<LoginField> fields) {
+        validateToken();
+        AccountCredentials account = new AccountCredentials();
+        account.setList(fields);
+        String str;
+        try {
+            str = xmlMapper.writeValueAsString(account);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+        return target.path("/v1/customers/" + customerId + "/institutions/" + institutionId + "/accounts")
+                .request(MediaType.APPLICATION_XML_TYPE)
+                .header("Finicity-App-Key", finicityAppKey)
+                .header("Finicity-App-Token", token)
+                .post(Entity.entity(str, MediaType.APPLICATION_XML_TYPE), Accounts.class);
+    }
+
+    public Accounts activateAccounts(String customerId, int institutionId, Accounts accounts) {
+        validateToken();
+        return target.path("/v1/customers/" + customerId + "/institutions/" + institutionId + "/accounts")
+                .request(MediaType.APPLICATION_XML_TYPE)
+                .header("Finicity-App-Key", finicityAppKey)
+                .header("Finicity-App-Token", token)
+                .put(Entity.entity(accounts, MediaType.APPLICATION_XML_TYPE), Accounts.class);
     }
 
     public Customers getCustomers(String search, int start, int limit) {

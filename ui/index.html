@@ -31,6 +31,14 @@
 
   <!-- Main App JS -->
   <script src="app.js"></script>
+  <script src="institutions/institutions.js"></script>
+  <script src="institutions/partial/select-institution/select-institution.js"></script>
+  <script src="institutions/directive/accounts/accounts.js"></script>
+  <script src="institutions/institutions.js"></script>
+  <script src="institutions/directive/accounts/accounts.js"></script>
+  <script src="institutions/partial/select-institution/select-institution.js"></script>
+  <script src="institutions/partial/institution-login/institution-login.js"></script>
+  <script src="institutions/service/institutions.js"></script>
   <!-- Add New Component JS Above -->
 
   <div class="page-container">
@@ -54,12 +62,15 @@
      <div class="row row-offcanvas row-offcanvas-left">
 
        <!-- sidebar -->
-       <div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">
+       <div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation" ng-controller="InstitutionsCtrl">
          <ul class="nav">
            <li class="active"><a href="#">Account 1</a></li>
            <li><a href="#">Account 2</a></li>
            <li><a href="#">Account 3</a></li>
            <li><a href="#">Account 4</a></li>
+           <li><button type="button" class="btn btn-primary btn-block" ng-click="open()">
+             Add
+           </button></li>
          </ul>
        </div>
 

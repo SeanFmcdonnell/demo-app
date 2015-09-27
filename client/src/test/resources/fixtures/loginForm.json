@@ -1,0 +1,26 @@
+{
+  "loginField": [
+    {
+      "id": 101732001,
+      "name": "Banking Userid",
+      "value": "demo",
+      "description": "Banking Userid",
+      "displayOrder": 1,
+      "mask": false,
+      "valueLengthMin": 0,
+      "valueLengthMax": 0,
+      "instructions": null
+    },
+    {
+      "id": 101732002,
+      "name": "Banking Password",
+      "value": "go",
+      "description": "Banking Password",
+      "displayOrder": 2,
+      "mask": true,
+      "valueLengthMin": 0,
+      "valueLengthMax": 0,
+      "instructions": null
+    }
+  ]
+}
