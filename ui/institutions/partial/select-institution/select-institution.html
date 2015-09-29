@@ -44,6 +44,18 @@
 			</div>
 		</form>
 	</div>
+	<div class="modal-body" ng-if="state==='mfa'">
+		<h1>MFA</h1>
+		<form ng-repeat="field in login.loginField">
+			<div class="form-group">
+				<label for="{{field.id}}">{{field.name}}</label>
+				<input type="text" class="form-control" id="{{field.id}}" ng-model="login.loginField[$index].value"/>
+				<span id="helpBlock" class="help-block" ng-if="field.instructions">
+					{{field.instructions}}
+				</span>
+			</div>
+		</form>
+	</div>
 	<div class="modal-footer">
 		<button class="btn btn-default" ng-click="$dismiss()">Cancel</button>
 		<button class="btn btn-primary" ng-click="progress()" ng-if="state!=='select'">Next</button>

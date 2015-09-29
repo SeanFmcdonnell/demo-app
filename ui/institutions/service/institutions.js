@@ -1,14 +1,8 @@
-angular.module('institutions').factory('institutions',function($http, host) {
+angular.module('institutions').factory('institutions',function($http, host, auth) {
 
-	var token;
 	var base = host + '/institutions/';
 
 	var institutions = {
-		setToken: function(response) {
-			token = response;
-			console.log('Token set to', response);
-		},
-
 		getInstitutions: function(page, search) {
 	        return $http.get(base + '?page=' + page + '&search=' + search);
 		},
@@ -17,12 +11,12 @@ angular.module('institutions').factory('institutions',function($http, host) {
             return $http.get(base + id + '/login');
 		},
 
-		discoverAccounts(id, login) {
+		discoverAccounts: function(id, login) {
             return $http({
 				method: 'POST',
 				url: base + id + '/discover',
 				headers: {
-					'Authorization' : 'Bearer ' + token
+					'Authorization' : 'Bearer ' + auth.getToken()
 				},
 				data: login
 			});

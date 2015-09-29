@@ -8,12 +8,16 @@ import lombok.Data;
 import java.util.List;
 
 /**
- * Created by jhutchins on 9/26/15.
+ * Created by jhutchins on 9/28/15.
  */
 @Data
-@JacksonXmlRootElement(localName = "accounts")
-public class Accounts implements ActivationResponse {
-    @JsonProperty("account")
+@JacksonXmlRootElement(localName = "transactions")
+public class Transactions {
+    private int found;
+    private int displaying;
+    private boolean moreAvailable;
+    private String createdDate;
+    @JsonProperty("transaction")
     @JacksonXmlElementWrapper(useWrapping = false)
-    private List<Account> list;
+    List<Transaction> list;
 }

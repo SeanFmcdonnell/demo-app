@@ -1,4 +1,4 @@
-angular.module('institutions').controller('SelectInstitutionCtrl', function($scope, institutions){
+angular.module('institutions').controller('SelectInstitutionCtrl', function($scope, $modalInstance, institutions, accounts){
 
     $scope.search = null;
     $scope.total = 0;
@@ -23,12 +23,12 @@ angular.module('institutions').controller('SelectInstitutionCtrl', function($sco
     $scope.searchChange = function(search) {
         $scope.search = search;
         $scope.setPage(1);
-    }
+    };
 
     $scope.setPage = function(page) {
         $scope.page = page;
         update();
-    }
+    };
 
     $scope.selectBank = function(id) {
         $scope.state = 'login';
@@ -36,15 +36,25 @@ angular.module('institutions').controller('SelectInstitutionCtrl', function($sco
         institutions.getLogin(id).then(function(result) {
             $scope.login = result.data;
         });
-    }
+    };
 
     $scope.progress = function() {
         if ($scope.state === 'login') {
             var id = $scope.institution;
             institutions.discoverAccounts(id, $scope.login)
                 .then(function(result) {
-                    console.log(result);
+                    var data = result.data;
+                    if (data['account']) {
+                        accounts.addAccounts(data['account']);
+                        $modalInstance.dismiss();
+                    }
+                    else {
+                        $scope.state = 'mfa';
+                        $scope.progress();
+                    }
                 });
+        } else if ($scope.state === 'mfa') {
+
         }
-    }
+    };
 });

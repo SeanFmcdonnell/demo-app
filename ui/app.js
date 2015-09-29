@@ -38,7 +38,8 @@ function onSignIn(googleUser) {
   xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
   xhr.onload = function() {
     var token = xhr.responseText;
-    angular.element('html').injector().get('institutions').setToken(token);
+    angular.element('html').injector().get('auth').setToken(token);
+    angular.element('html').injector().get('accounts').init();
   };
   xhr.send(id_token);
 }

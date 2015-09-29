@@ -8,12 +8,12 @@ import lombok.Data;
 import java.util.List;
 
 /**
- * Created by jhutchins on 9/26/15.
+ * Created by jhutchins on 9/28/15.
  */
 @Data
-@JacksonXmlRootElement(localName = "accounts")
-public class Accounts implements ActivationResponse {
-    @JsonProperty("account")
-    @JacksonXmlElementWrapper(useWrapping = false)
-    private List<Account> list;
+@JacksonXmlRootElement(localName = "mfaChallenges")
+public class MfaChallenges implements ActivationResponse {
+    @JsonProperty("question")
+    @JacksonXmlElementWrapper(localName = "questions")
+    private final List<Question> list;
 }

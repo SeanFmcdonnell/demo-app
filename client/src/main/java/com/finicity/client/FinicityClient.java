@@ -10,12 +10,14 @@ import lombok.Builder;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import java.beans.ConstructorProperties;
+import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
@@ -24,6 +26,7 @@ import java.util.List;
 /**
  * Created by jhutchins on 9/23/15.
  */
+@Slf4j
 public class FinicityClient {
     private static final Duration TOKEN_LIFE = Duration.ofMinutes(90);
 
@@ -92,7 +95,7 @@ public class FinicityClient {
                 .get(LoginForm.class);
     }
 
-    public Accounts discoverAccounts(String customerId, int institutionId, List<LoginField> fields) {
+    public ActivationResponse addAllAccounts(String customerId, int institutionId, List<LoginField> fields) {
         validateToken();
         AccountCredentials account = new AccountCredentials();
         account.setList(fields);
@@ -102,20 +105,30 @@ public class FinicityClient {
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
-        return target.path("/v1/customers/" + customerId + "/institutions/" + institutionId + "/accounts")
+        String xml = target.path("/v1/customers/" + customerId + "/institutions/" + institutionId + "/accounts/addall")
                 .request(MediaType.APPLICATION_XML_TYPE)
                 .header("Finicity-App-Key", finicityAppKey)
                 .header("Finicity-App-Token", token)
-                .post(Entity.entity(str, MediaType.APPLICATION_XML_TYPE), Accounts.class);
+                .post(Entity.entity(str, MediaType.APPLICATION_XML_TYPE), String.class);
+        try {
+            return xmlMapper.readValue(xml, Accounts.class);
+        } catch (IOException e) {
+            log.debug("Error mapping to Accounts object", e);
+        }
+        try {
+            return xmlMapper.readValue(xml, MfaChallenges.class);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public Accounts activateAccounts(String customerId, int institutionId, Accounts accounts) {
+    public Accounts getCustomerAccounts(String customerId) {
         validateToken();
-        return target.path("/v1/customers/" + customerId + "/institutions/" + institutionId + "/accounts")
+        return target.path("/v1/customers/" + customerId + "/accounts/")
                 .request(MediaType.APPLICATION_XML_TYPE)
                 .header("Finicity-App-Key", finicityAppKey)
                 .header("Finicity-App-Token", token)
-                .put(Entity.entity(accounts, MediaType.APPLICATION_XML_TYPE), Accounts.class);
+                .get(Accounts.class);
     }
 
     public Customers getCustomers(String search, int start, int limit) {
@@ -141,6 +154,17 @@ public class FinicityClient {
                 .header("Finicity-App-Key", finicityAppKey)
                 .header("Finicity-App-Token", token)
                 .post(Entity.entity(creds, MediaType.APPLICATION_XML_TYPE), Customer.class);
+    }
+
+    public Transactions getTransactions(String customerId, String accountId) {
+        validateToken();
+        return target.path("/v2/customers/" + customerId + "/accounts/" + accountId + "/transactions")
+                .queryParam("fromDate", Instant.now().minus(Duration.ofDays(30)).getEpochSecond())
+                .queryParam("toDate", Instant.now().getEpochSecond())
+                .request(MediaType.APPLICATION_XML_TYPE)
+                .header("Finicity-App-Key", finicityAppKey)
+                .header("Finicity-App-Token", token)
+                .get(Transactions.class);
     }
 
     @Setter

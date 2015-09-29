@@ -13,4 +13,13 @@ public class Account {
     private String type;
     private String status;
     private String balance;
+    private String aggregationStatusCode;
+    private String customerId;
+    private String institutionId;
+    private String balanceDate;
+    private String aggregationSuccessDate;
+    private String aggregationAttemptDate;
+    private String createdDate;
+    private String lastUpdatedDate;
+    private String detail;
 }

@@ -4,6 +4,7 @@ import static org.eclipse.jetty.servlets.CrossOriginFilter.*;
 
 import com.finicity.client.FinicityClient;
 import com.finicity.example.api.User;
+import com.finicity.example.resources.AccountsResource;
 import com.finicity.example.resources.InstitutionsResource;
 import com.finicity.example.services.AuthService;
 import io.dropwizard.Application;
@@ -46,6 +47,7 @@ public class Example extends Application<ExampleConfiguration> {
         final FinicityClient finicity = config.getFinicityClient().build(env, client);
         env.jersey().register(config.getGoogleReource().build(authService, finicity));
         env.jersey().register(new InstitutionsResource(finicity));
+        env.jersey().register(new AccountsResource(finicity));
         env.jersey().register(AuthFactory.binder(new OAuthFactory<>(authService, "SUPER SECRET STUFF", User.class)));
     }
 
