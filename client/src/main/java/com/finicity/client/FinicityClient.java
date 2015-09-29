@@ -1,12 +1,9 @@
 package com.finicity.client;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.jaxrs.xml.JacksonJaxbXMLProvider;
 import com.finicity.client.models.*;
-import lombok.Builder;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
@@ -20,7 +17,6 @@ import java.beans.ConstructorProperties;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /**
@@ -165,6 +161,26 @@ public class FinicityClient {
                 .header("Finicity-App-Key", finicityAppKey)
                 .header("Finicity-App-Token", token)
                 .get(Transactions.class);
+    }
+
+    public Subscriptions createSubscription(String customerId, String accountId, String callback) {
+        validateToken();
+        Subscription subscription = new Subscription();
+        subscription.setCallbackUrl(callback);
+        return target.path("/v1/customers/" + customerId + "/accounts/" + accountId + "/txpush")
+                .request(MediaType.APPLICATION_XML_TYPE)
+                .header("Finicity-App-Key", finicityAppKey)
+                .header("Finicity-App-Token", token)
+                .post(Entity.entity(subscription, MediaType.APPLICATION_XML_TYPE), Subscriptions.class);
+    }
+
+    public void deleteSubscription(String customerId, String subscriptionId) {
+        validateToken();
+        target.path("/v1/customers/" + customerId + "/subscriptions/" + subscriptionId)
+                .request(MediaType.APPLICATION_XML_TYPE)
+                .header("Finicity-App-Key", finicityAppKey)
+                .header("Finicity-App-Token", token)
+                .delete();
     }
 
     @Setter

@@ -6,6 +6,7 @@ import com.finicity.client.FinicityClient;
 import com.finicity.example.api.User;
 import com.finicity.example.resources.AccountsResource;
 import com.finicity.example.resources.InstitutionsResource;
+import com.finicity.example.resources.SubscriptionResource;
 import com.finicity.example.services.AuthService;
 import io.dropwizard.Application;
 import io.dropwizard.auth.AuthFactory;
@@ -19,7 +20,6 @@ import javax.servlet.DispatcherType;
 import javax.servlet.FilterRegistration;
 import javax.ws.rs.client.Client;
 import java.util.EnumSet;
-import java.util.UUID;
 
 /**
  * Created by jhutchins on 9/23/15.
@@ -48,6 +48,7 @@ public class Example extends Application<ExampleConfiguration> {
         env.jersey().register(config.getGoogleReource().build(authService, finicity));
         env.jersey().register(new InstitutionsResource(finicity));
         env.jersey().register(new AccountsResource(finicity));
+        env.jersey().register(new SubscriptionResource(finicity, authService));
         env.jersey().register(AuthFactory.binder(new OAuthFactory<>(authService, "SUPER SECRET STUFF", User.class)));
     }
 
@@ -55,7 +56,7 @@ public class Example extends Application<ExampleConfiguration> {
         FilterRegistration.Dynamic filter = env.servlets().addFilter("CORSFilter", CrossOriginFilter.class);
 
         filter.addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), false, env.getApplicationContext().getContextPath() + "*");
-        filter.setInitParameter(ALLOWED_METHODS_PARAM, "GET,PUT,POST,OPTIONS");
+        filter.setInitParameter(ALLOWED_METHODS_PARAM, "GET,PUT,POST,OPTIONS,DELETE");
         filter.setInitParameter(ALLOWED_ORIGINS_PARAM, "*");
         filter.setInitParameter(ALLOWED_HEADERS_PARAM, "Origin, Content-Type, Accept, Authorization");
         filter.setInitParameter(ALLOW_CREDENTIALS_PARAM, "true");

@@ -21,6 +21,10 @@ public class AuthService implements Authenticator<String, User> {
         return Optional.fromNullable(users.get(token));
     }
 
+    public User getUser(String token) {
+        return users.get(token);
+    }
+
     public String registerUser(User user) {
         String token = UUID.randomUUID().toString();
         users.put(token, user);
