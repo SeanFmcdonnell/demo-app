@@ -37,9 +37,13 @@ function onSignIn(googleUser) {
   xhr.open('POST', host + '/google/signin');
   xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
   xhr.onload = function() {
-    var token = xhr.responseText;
-    angular.element('html').injector().get('auth').setToken(token);
-    angular.element('html').injector().get('accounts').init();
+    if (xhr.status === 200) {
+      var token = xhr.responseText;
+      angular.element('html').injector().get('auth').setToken(token);
+      angular.element('html').injector().get('accounts').init();
+    } else {
+      console.log('Error signing in', xhr.status, xhr.responseText);
+    }
   };
   xhr.send(id_token);
 }
