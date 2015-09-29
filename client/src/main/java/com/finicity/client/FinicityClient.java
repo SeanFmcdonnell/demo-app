@@ -149,7 +149,7 @@ public class FinicityClient {
                 .request(MediaType.APPLICATION_XML_TYPE)
                 .header("Finicity-App-Key", finicityAppKey)
                 .header("Finicity-App-Token", token)
-                .post(Entity.entity(creds, MediaType.APPLICATION_XML_TYPE), Customer.class);
+                .post(Entity.entity(customer, MediaType.APPLICATION_XML_TYPE), Customer.class);
     }
 
     public Transactions getTransactions(String customerId, String accountId) {

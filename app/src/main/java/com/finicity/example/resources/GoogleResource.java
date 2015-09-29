@@ -1,6 +1,7 @@
 package com.finicity.example.resources;
 
 import com.finicity.client.FinicityClient;
+import com.finicity.client.models.Customer;
 import com.finicity.client.models.Customers;
 import com.finicity.example.api.User;
 import com.finicity.example.services.AuthService;
@@ -16,6 +17,7 @@ import javax.ws.rs.Path;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by jhutchins on 9/24/15.
@@ -52,7 +54,8 @@ public class GoogleResource {
 
     private String getFinicityId(String googleId) {
         final Customers customers = client.getCustomers(googleId, 1, 1);
-        if (customers.getList().size() == 0) {
+        List<Customer> list = customers.getList();
+        if (list == null || list.size() == 0) {
            return client.createTestCustomer(googleId, "first", "last").getId();
         }
         else {
