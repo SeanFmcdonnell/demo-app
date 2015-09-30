@@ -1,4 +1,4 @@
-package com.finicity.client;
+package com.finicity.client.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;

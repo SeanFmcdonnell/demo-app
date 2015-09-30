@@ -37,7 +37,8 @@
 		<form>
 			<div class="form-group" ng-repeat="field in login.loginField">
 				<label for="{{field.id}}">{{field.name}}</label>
-				<input type="text" class="form-control" id="{{field.id}}" ng-model="login.loginField[$index].value"/>
+				<input ng-if="!field.mask" type="text" class="form-control" id="{{field.id}}" ng-model="login.loginField[$index].value"/>
+				<input ng-if="field.mask" type="password" class="form-control" id="{{field.id}}" ng-model="login.loginField[$index].value"/>
 				<span id="helpBlock" class="help-block" ng-if="field.instructions">
 					{{field.instructions}}
 				</span>

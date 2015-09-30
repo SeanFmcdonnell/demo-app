@@ -21,5 +21,5 @@ public class Account {
     private String aggregationAttemptDate;
     private String createdDate;
     private String lastUpdatedDate;
-    private String detail;
+    private Detail detail;
 }

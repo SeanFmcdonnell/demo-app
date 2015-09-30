@@ -1,6 +1,7 @@
 package com.finicity.client;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.jaxrs.xml.JacksonJaxbXMLProvider;
 import com.finicity.client.models.*;
@@ -8,7 +9,6 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
-import org.glassfish.jersey.client.ClientResponse;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Entity;
@@ -38,6 +38,7 @@ public class FinicityClient {
 
     @ConstructorProperties({"partnerId", "partnerSecret", "finicityAppKey", "client"})
     private FinicityClient(String partnerId, String partnerSecret, String finicityAppKey, Client client) {
+        xmlMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,  false);
         xmlMapper.findAndRegisterModules();
         JacksonJaxbXMLProvider provider = new JacksonJaxbXMLProvider();
         provider.setMapper(xmlMapper);

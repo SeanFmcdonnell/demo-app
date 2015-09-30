@@ -1,7 +1,7 @@
 package com.finicity.example.resources;
 
 import com.finicity.client.FinicityClient;
-import com.finicity.client.Subscriptions;
+import com.finicity.client.models.Subscriptions;
 import com.finicity.client.models.Event;
 import com.finicity.example.api.User;
 import com.finicity.example.services.AuthService;
