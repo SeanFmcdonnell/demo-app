@@ -25,6 +25,7 @@ angular.module('institutions').controller('SelectInstitutionCtrl', function($sco
         if (data['account']) {
             accounts.addAccounts(data['account']);
             $modalInstance.dismiss();
+            accounts.refresh();
         }
         else {
             $scope.state = 'mfa';

@@ -10,12 +10,24 @@ angular.module('institutions').factory('accounts',function($http, auth, host) {
 		});
     }
 
+    function refresh(id) {
+            return $http({
+                method: 'POST',
+                url: base + 'refresh',
+				headers: {
+					'Authorization' : 'Bearer ' + auth.getToken()
+				}
+            });
+    }
+
 	var accounts = {
 		addAccounts: addAccounts,
 
 		getAccounts: function() {
 			return _accounts;
 		},
+
+        refresh: refresh, 
 
         getTransactions: function(id) {
             return $http({
@@ -37,6 +49,7 @@ angular.module('institutions').factory('accounts',function($http, auth, host) {
             }).then(function(result) {
                 console.log(result.data);
                 addAccounts(result.data.account || []);
+                refresh();
             });
 		}
 	};

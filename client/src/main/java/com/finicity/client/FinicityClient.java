@@ -215,6 +215,15 @@ public class FinicityClient {
                 .delete();
     }
 
+    public Accounts refreshAccounts(String customerId) {
+        validateToken();
+        return target.path("/v1/customers/" + customerId + "/accounts/")
+                .request(MediaType.APPLICATION_XML_TYPE)
+                .header("Finicity-App-Key", finicityAppKey)
+                .header("Finicity-App-Token", token)
+                .post(null, Accounts.class);
+    }
+
     @Setter
     @ToString
     @Accessors(fluent = true)

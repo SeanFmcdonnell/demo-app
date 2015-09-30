@@ -32,8 +32,8 @@ angular.module('institutions').controller('InstitutionsCtrl', function($scope, $
             return;
         }
         accounts.getTransactions(value).then(function(result) {
-            $scope.transactions.splice(0, $scope.transactions.length);
-            $scope.transactions.concat(result.data.transaction || []);
+            console.log('Got transactions', result.data.transaction);
+            $scope.transactions = result.data.transaction || [];
         });
         if (subscription !== null) {
             subscriptions.delete(subscription.id);

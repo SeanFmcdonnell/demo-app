@@ -8,6 +8,7 @@ import io.dropwizard.auth.Auth;
 import lombok.AllArgsConstructor;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 
@@ -22,6 +23,12 @@ public class AccountsResource {
     @GET
     public Accounts getAccounts(@Auth User user) {
         return client.getCustomerAccounts(user.getFinicityId());
+    }
+
+    @POST
+    @Path("refresh")
+    public Accounts refresh(@Auth User user) {
+        return client.refreshAccounts(user.getFinicityId());
     }
 
     @GET
