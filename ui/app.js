@@ -33,7 +33,7 @@ $(document).ready(function() {
 
 function onSignIn(googleUser) {
   // Not secure. Don't do this in production
-  var id_token = googleUser.getAuthResponse().id;
+  var id_token = googleUser.getBasicProfile().getId();
   var xhr = new XMLHttpRequest();
   xhr.open('POST', host + '/google/signin');
   xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
