@@ -2,6 +2,7 @@ package com.finicity.example.api;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.validator.constraints.NotEmpty;
 
 /**
@@ -15,4 +16,6 @@ public class User {
     @NotEmpty
     private final String googleId;
     private final String email;
+    @Setter
+    private String currentMfa;
 }

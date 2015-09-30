@@ -14,7 +14,6 @@ angular.module('institutions').controller('InstitutionsCtrl', function($scope, $
     var subscription = null;
 
     $scope.$watch(function() {
-        console.log('Called watch');
         return accounts.getAccounts();
     }, function(value) {
         $scope.accounts = value;
@@ -33,7 +32,8 @@ angular.module('institutions').controller('InstitutionsCtrl', function($scope, $
             return;
         }
         accounts.getTransactions(value).then(function(result) {
-            $scope.transactions = result.data.transaction;
+            $scope.transactions.splice(0, $scope.transactions.length);
+            $scope.transactions.concat(result.data.transaction || []);
         });
         if (subscription !== null) {
             subscriptions.delete(subscription.id);
@@ -49,11 +49,14 @@ angular.module('institutions').controller('InstitutionsCtrl', function($scope, $
         if (!value) {
             return;
         }
+        console.log('LogIn');
         $scope.loggedIn = true;
         subscriptions.registerListener('transaction', function(event) {
             var transaction = JSON.parse(event.data);
+            console.log('Got transaction event', transaction);
             if ($scope.active && transaction.accountId === $scope.active.id) {
-                $scope.transactions.push(transaction);
+                $scope.transactions.unshift(transaction);
+                $scope.$apply();
             }
         });
     });

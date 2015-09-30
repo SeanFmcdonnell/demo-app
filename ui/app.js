@@ -1,4 +1,4 @@
-var host = 'http://localhost:8080';
+var host = 'http://localhost:9001/api';
 
 var example = angular.module('example', ['ui.bootstrap', 'ui.utils', 'ngRoute', 'ngAnimate', 'institutions']);
 

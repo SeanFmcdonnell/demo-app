@@ -8,11 +8,13 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
+import org.glassfish.jersey.client.ClientResponse;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.beans.ConstructorProperties;
 import java.io.IOException;
 import java.time.Duration;
@@ -101,21 +103,50 @@ public class FinicityClient {
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
-        String xml = target.path("/v1/customers/" + customerId + "/institutions/" + institutionId + "/accounts/addall")
+        final Response response = target.path("/v1/customers/" + customerId + "/institutions/" + institutionId + "/accounts/addall")
                 .request(MediaType.APPLICATION_XML_TYPE)
                 .header("Finicity-App-Key", finicityAppKey)
                 .header("Finicity-App-Token", token)
-                .post(Entity.entity(str, MediaType.APPLICATION_XML_TYPE), String.class);
+                .post(Entity.entity(str, MediaType.APPLICATION_XML_TYPE));
+        return extractResponse(response);
+    }
+
+    public ActivationResponse addAllAccounts(String customerId, int institutionId, MfaChallenges challenges, String session) {
+        validateToken();
+        String str;
         try {
-            return xmlMapper.readValue(xml, Accounts.class);
-        } catch (IOException e) {
-            log.debug("Error mapping to Accounts object", e);
-        }
-        try {
-            return xmlMapper.readValue(xml, MfaChallenges.class);
-        } catch (IOException e) {
+            str = xmlMapper.writeValueAsString(new MfaResponse(challenges));
+        } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
+        final Response response = target.path("/v1/customers/" + customerId + "/institutions/" + institutionId + "/accounts/addall/mfa")
+                .request(MediaType.APPLICATION_XML_TYPE)
+                .header("Finicity-App-Key", finicityAppKey)
+                .header("Finicity-App-Token", token)
+                .header("MFA-Session", session)
+                .post(Entity.entity(str, MediaType.APPLICATION_XML_TYPE));
+        return extractResponse(response);
+    }
+
+    private ActivationResponse extractResponse(Response response) {
+        final String xml = response.readEntity(String.class);
+        ActivationResponseBody body;
+        try {
+            body = xmlMapper.readValue(xml, Accounts.class);
+        } catch (Exception e) {
+            log.debug("Error mapping to Accounts object", e);
+            try {
+                body = xmlMapper.readValue(xml, MfaChallenges.class);
+            } catch (IOException e1) {
+                throw new RuntimeException(e1);
+            }
+        }
+        ActivationResponse.Builder builder = ActivationResponse.builder()
+                .body(body);
+        if (response.getStatus() == 203) {
+            builder.mfaSession(response.getHeaderString("MFA-Session"));
+        }
+        return builder.build();
     }
 
     public Accounts getCustomerAccounts(String customerId) {

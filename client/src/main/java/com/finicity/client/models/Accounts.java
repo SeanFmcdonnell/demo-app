@@ -12,7 +12,7 @@ import java.util.List;
  */
 @Data
 @JacksonXmlRootElement(localName = "accounts")
-public class Accounts implements ActivationResponse {
+public class Accounts implements ActivationResponseBody {
     @JsonProperty("account")
     @JacksonXmlElementWrapper(useWrapping = false)
     private List<Account> list;

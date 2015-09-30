@@ -34,8 +34,8 @@
 			num-pages="numPages"/>
 	</div>
 	<div class="modal-body" ng-if="state==='login'">
-		<form ng-repeat="field in login.loginField">
-			<div class="form-group">
+		<form>
+			<div class="form-group" ng-repeat="field in login.loginField">
 				<label for="{{field.id}}">{{field.name}}</label>
 				<input type="text" class="form-control" id="{{field.id}}" ng-model="login.loginField[$index].value"/>
 				<span id="helpBlock" class="help-block" ng-if="field.instructions">
@@ -45,14 +45,22 @@
 		</form>
 	</div>
 	<div class="modal-body" ng-if="state==='mfa'">
-		<h1>MFA</h1>
-		<form ng-repeat="field in login.loginField">
-			<div class="form-group">
-				<label for="{{field.id}}">{{field.name}}</label>
-				<input type="text" class="form-control" id="{{field.id}}" ng-model="login.loginField[$index].value"/>
-				<span id="helpBlock" class="help-block" ng-if="field.instructions">
-					{{field.instructions}}
-				</span>
+		<form>
+			<div class="form-group" ng-repeat="question in questions">
+				<label for="item{{$index}}">{{question.text}}</label>
+                <img src="{{question.image}}" ng-if="question.image" />
+				<input type="text" ng-if="!(question.choice || question.imageChoice)" class="form-control" id="item{{$index}}" ng-model="questions[$index].answer"/>
+                <select ng-if="question.choice" id="item{{$index}}" ng-model="questions[$index].answer">
+                    <option value="{{choice.value}}" ng-repeat="choice in question.choice">
+                        {{choice.data}}
+                    </option>
+                </select>
+                <div class type="radio" ng-repeat="choice in question.imageChoice">
+                    <label>
+                        <input type="radio" ng-model="questions[$parent.$index].answer" value="{{choice.value}}" />
+                        <img src="{{choice.data}}" />
+                    </label>
+                </div>
 			</div>
 		</form>
 	</div>

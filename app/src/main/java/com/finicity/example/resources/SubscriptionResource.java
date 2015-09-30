@@ -13,6 +13,7 @@ import org.glassfish.jersey.media.sse.EventOutput;
 import org.glassfish.jersey.media.sse.OutboundEvent;
 import org.glassfish.jersey.media.sse.SseFeature;
 
+import javax.inject.Singleton;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -26,6 +27,7 @@ import java.util.Optional;
  * Created by jhutchins on 9/29/15.
  */
 @Slf4j
+@Singleton
 @AllArgsConstructor
 @Path("subscriptions")
 public class SubscriptionResource {
@@ -48,18 +50,29 @@ public class SubscriptionResource {
     @Consumes(MediaType.APPLICATION_XML)
     public void callback(Event event) {
         event.getTransaction().stream()
-                .forEach(transaction -> Optional.ofNullable(outputs.get(transaction.getCustomerId()))
-                        .ifPresent(output -> {
-                            try {
-                                output.write(new OutboundEvent.Builder()
-                                        .mediaType(MediaType.APPLICATION_JSON_TYPE)
-                                        .name("transaction")
-                                        .data(event)
-                                        .build());
-                            } catch (IOException e) {
-                                log.error("Error sending event", e);
-                            }
-                        }));
+                .filter(transaction -> outputs.get(transaction.getCustomerId()) != null)
+                .map(transaction -> {
+                    EventOutput output = outputs.get(transaction.getCustomerId());
+                    try {
+                        output.write(new OutboundEvent.Builder()
+                                .mediaType(MediaType.APPLICATION_JSON_TYPE)
+                                .name("transaction")
+                                .data(transaction)
+                                .build());
+                        log.info("Wrote transaction [{}]", transaction);
+                    } catch (IOException e) {
+                        log.error("Error sending event", e);
+                    }
+                    return output;
+                })
+                .distinct()
+                .forEach(output -> {
+                    try {
+                        output.close();
+                    } catch (IOException e) {
+                        log.error("Failed to close connection", e);
+                    }
+                });
     }
 
     @GET
@@ -68,6 +81,13 @@ public class SubscriptionResource {
     public EventOutput getServerSentEvents(@QueryParam("token") String token) {
         final EventOutput eventOutput = new EventOutput();
         User user = auth.getUser(token);
+        Optional.ofNullable(outputs.get(user.getFinicityId())).ifPresent(output -> {
+            try {
+                output.close();
+            } catch (IOException e) {
+                log.error("Error closing output", e);
+            }
+        });
         outputs.put(user.getFinicityId(), eventOutput);
         return eventOutput;
     }

@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.util.Optional;
 
 /**
  * Created by jhutchins on 9/26/15.
@@ -34,10 +35,24 @@ public class InstitutionsResource {
     @POST
     @Path("{id}/discover")
     @Consumes(MediaType.APPLICATION_JSON)
-    public ActivationResponse discover(
+    public ActivationResponseBody discover(
             @PathParam("id") final int id,
             @Auth final User user,
             final LoginForm form) {
-        return client.addAllAccounts(user.getFinicityId(), id, form.getFields());
+        ActivationResponse response = client.addAllAccounts(user.getFinicityId(), id, form.getFields());
+        user.setCurrentMfa(response.getMfaSession());
+        return response.getBody();
+    }
+
+    @POST
+    @Path("{id}/discover/mfa")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public ActivationResponseBody mfa(
+            @PathParam("id") final int id,
+            @Auth final User user,
+            final MfaChallenges challenges) {
+        ActivationResponse response = client.addAllAccounts(user.getFinicityId(), id, challenges, user.getCurrentMfa());
+        user.setCurrentMfa(response.getMfaSession());
+        return response.getBody();
     }
 }

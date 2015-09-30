@@ -12,8 +12,8 @@ import java.util.List;
  */
 @Data
 @JacksonXmlRootElement(localName = "mfaChallenges")
-public class MfaChallenges implements ActivationResponse {
+public class MfaChallenges implements ActivationResponseBody {
     @JsonProperty("question")
     @JacksonXmlElementWrapper(localName = "questions")
-    private final List<Question> list;
+    private List<Question> list;
 }

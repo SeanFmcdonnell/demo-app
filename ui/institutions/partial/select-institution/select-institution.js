@@ -20,6 +20,19 @@ angular.module('institutions').controller('SelectInstitutionCtrl', function($sco
         });
     }
 
+    function discover(result) {
+        var data = result.data;
+        if (data['account']) {
+            accounts.addAccounts(data['account']);
+            $modalInstance.dismiss();
+        }
+        else {
+            $scope.state = 'mfa';
+            console.log(data['question']);
+            $scope.questions = data['question'];
+        }
+    }
+
     $scope.searchChange = function(search) {
         $scope.search = search;
         $scope.setPage(1);
@@ -39,22 +52,12 @@ angular.module('institutions').controller('SelectInstitutionCtrl', function($sco
     };
 
     $scope.progress = function() {
+        var id = $scope.institution;
         if ($scope.state === 'login') {
-            var id = $scope.institution;
-            institutions.discoverAccounts(id, $scope.login)
-                .then(function(result) {
-                    var data = result.data;
-                    if (data['account']) {
-                        accounts.addAccounts(data['account']);
-                        $modalInstance.dismiss();
-                    }
-                    else {
-                        $scope.state = 'mfa';
-                        $scope.progress();
-                    }
-                });
+            institutions.discoverAccounts(id, $scope.login).then(discover);
         } else if ($scope.state === 'mfa') {
-
+            console.log('Response', $scope.questions);
+            institutions.discoverAccountsMfa(id, $scope.questions).then(discover);
         }
     };
 });

@@ -20,6 +20,17 @@ angular.module('institutions').factory('institutions',function($http, host, auth
 				},
 				data: login
 			});
+		},
+
+		discoverAccountsMfa: function(id, questions) {
+            return $http({
+				method: 'POST',
+				url: base + id + '/discover/mfa',
+				headers: {
+					'Authorization' : 'Bearer ' + auth.getToken()
+				},
+				data: { question: questions }
+			});
 		}
 	};
 
