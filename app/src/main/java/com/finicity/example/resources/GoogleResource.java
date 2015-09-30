@@ -34,22 +34,28 @@ public class GoogleResource {
     @POST
     @Path("signin")
     public String signin(String idTokenString) throws GeneralSecurityException, IOException {
-        String result = null;
-        GoogleIdToken idToken = verifier.verify(idTokenString);
-        if (idToken != null) {
-            final GoogleIdToken.Payload payload = idToken.getPayload();
-            log.info("User ID: {}", payload.getSubject());
-            final String finicityId = getFinicityId(payload.getSubject());
-            User user = User.builder()
-                    .finicityId(finicityId)
-                    .googleId(payload.getSubject())
-                    .email(payload.getEmail())
-                    .build();
-            result = auth.registerUser(user);
-        } else {
-            log.error("Invalid ID token {}", idTokenString);
-        }
-        return result;
+//        String result = null;
+//        GoogleIdToken idToken = verifier.verify(idTokenString);
+//        if (idToken != null) {
+//            final GoogleIdToken.Payload payload = idToken.getPayload();
+//            log.info("User ID: {}", payload.getSubject());
+//            final String finicityId = getFinicityId(payload.getSubject());
+//            User user = User.builder()
+//                    .finicityId(finicityId)
+//                    .googleId(payload.getSubject())
+//                    .email(payload.getEmail())
+//                    .build();
+//            result = auth.registerUser(user);
+//        } else {
+//            log.error("Invalid ID token {}", idTokenString);
+//        }
+//        return result;
+        final String finicityId = getFinicityId(idTokenString);
+        User user = User.builder()
+                .finicityId(finicityId)
+                .googleId(idTokenString)
+                .build();
+        return auth.registerUser(user);
     }
 
     private String getFinicityId(String googleId) {

@@ -35,7 +35,8 @@ angular.module('institutions').factory('accounts',function($http, auth, host) {
 					'Authorization' : 'Bearer ' + auth.getToken()
 				}
             }).then(function(result) {
-                addAccounts(result.data.account);
+                console.log(result.data);
+                addAccounts(result.data.account || []);
             });
 		}
 	};
