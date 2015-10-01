@@ -24,7 +24,7 @@ import java.util.List;
  */
 @Slf4j
 @Builder
-@Path("google")
+@Path("api/google")
 public class GoogleResource {
 
     private final AuthService auth;

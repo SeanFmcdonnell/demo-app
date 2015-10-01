@@ -15,7 +15,7 @@ import javax.ws.rs.PathParam;
 /**
  * Created by jhutchins on 9/28/15.
  */
-@Path("accounts")
+@Path("api/accounts")
 @AllArgsConstructor
 public class AccountsResource {
     private final FinicityClient client;

@@ -14,7 +14,7 @@ import java.util.Optional;
  * Created by jhutchins on 9/26/15.
  */
 @AllArgsConstructor
-@Path("institutions")
+@Path("api/institutions")
 public class InstitutionsResource {
 
     private final FinicityClient client;

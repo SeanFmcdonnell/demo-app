@@ -29,7 +29,7 @@ import java.util.Optional;
 @Slf4j
 @Singleton
 @AllArgsConstructor
-@Path("subscriptions")
+@Path("api/subscriptions")
 public class SubscriptionResource {
     private final FinicityClient client;
     private final AuthService auth;
