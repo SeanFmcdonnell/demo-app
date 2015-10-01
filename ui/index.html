@@ -65,8 +65,8 @@
        <!-- sidebar -->
        <div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">
          <ul class="nav">
-           <li ng-class="{active: account.id === active.id}" ng-repeat="account in accounts">
-               <a ng-click="setActive(account)">{{account.name}}</a>
+           <li id="{{account.id}}" ng-class="{active: account.id === active.id}" ng-repeat="account in accounts">
+               <a ng-click="setActive(account)">{{account.name}} ({{account.id}})</a>
            </li>
            <li><button type="button" class="btn btn-primary btn-block" ng-click="open()">
              Add
