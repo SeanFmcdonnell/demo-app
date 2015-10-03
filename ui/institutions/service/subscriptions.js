@@ -6,7 +6,7 @@ angular.module('institutions').factory('subscriptions',function($http, auth, hos
 	var subscriptions = {
         registerListener: function(event, func){
 			var url = base + 'events?token=' + auth.getToken();
-			console.log('Regstering for events at', url)
+			console.log('Regstering for events at', url);
             var source = new EventSource(url);
             source.addEventListener(event, func);
         },

@@ -8,30 +8,30 @@
 			<div class="form-group">
 				<label for="search">Search</label>
 				<input
-					type="text"
-					class="form-control"
-					id="search"
-					placeholder="Institution Name"
-					ng-model="search"
-					ng-change="searchChange(search)"/>
+				type="text"
+				class="form-control"
+				id="search"
+				placeholder="Institution Name"
+				ng-model="search"
+				ng-change="searchChange(search)"/>
 			</div>
 		</form>
 		<ul ng-repeat="item in institutions">
 			<li><button type="button" class="btn btn-link" ng-click="selectBank(item.id)">{{item.name}}</a></li>
 		</ul>
 		<pagination
-			total-items="total"
-			ng-model="page"
-			ng-change="setPage(page)"
-			max-size="10"
-			boundary-links="true"
-			class="pagination-sm"
-			previous-text="&lsaquo;"
-			next-text="&rsaquo;"
-			first-text="&laquo;"
-			last-text="&raquo;"
-			rotate="false"
-			num-pages="numPages"/>
+		total-items="total"
+		ng-model="page"
+		ng-change="setPage(page)"
+		max-size="10"
+		boundary-links="true"
+		class="pagination-sm"
+		previous-text="&lsaquo;"
+		next-text="&rsaquo;"
+		first-text="&laquo;"
+		last-text="&raquo;"
+		rotate="false"
+		num-pages="numPages"/>
 	</div>
 	<div class="modal-body" ng-if="state==='login'">
 		<form>
@@ -49,24 +49,31 @@
 		<form>
 			<div class="form-group" ng-repeat="question in questions">
 				<label for="item{{$index}}">{{question.text}}</label>
-                <img src="{{question.image}}" ng-if="question.image" />
+				<img src="{{question.image}}" ng-if="question.image" />
 				<input type="text" ng-if="!(question.choice || question.imageChoice)" class="form-control" id="item{{$index}}" ng-model="questions[$index].answer"/>
-                <select ng-if="question.choice" id="item{{$index}}" ng-model="questions[$index].answer">
-                    <option value="{{choice.value}}" ng-repeat="choice in question.choice">
-                        {{choice.data}}
-                    </option>
-                </select>
-                <div class type="radio" ng-repeat="choice in question.imageChoice">
-                    <label>
-                        <input type="radio" ng-model="questions[$parent.$index].answer" value="{{choice.value}}" />
-                        <img src="{{choice.data}}" />
-                    </label>
-                </div>
+				<select ng-if="question.choice" id="item{{$index}}" ng-model="questions[$index].answer">
+					<option value="{{choice.value}}" ng-repeat="choice in question.choice">
+						{{choice.data}}
+					</option>
+				</select>
+				<div class type="radio" ng-repeat="choice in question.imageChoice">
+					<label>
+						<input type="radio" ng-model="questions[$parent.$index].answer" value="{{choice.value}}" />
+						<img src="{{choice.data}}" />
+					</label>
+				</div>
 			</div>
+		</form>
+	</div>
+	<div class="modal-body" ng-if="state==='error'">
+		<h4>An Error has Occured</h4>
+		<form>
+			<p>Code: {{error.code}}</p>
+			<p>Message: {{error.message}}</p>
 		</form>
 	</div>
 	<div class="modal-footer">
 		<button class="btn btn-default" ng-click="$dismiss()">Cancel</button>
-		<button class="btn btn-primary" ng-click="progress()" ng-if="state!=='select'">Next</button>
+		<button class="btn btn-primary" ng-click="progress()" ng-if="state!=='select'&&state!=='error'">Next</button>
 	</div>
 </div>

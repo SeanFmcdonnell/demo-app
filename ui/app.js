@@ -1,4 +1,4 @@
-var host = 'https://localhost/api';
+var host = 'http://localhost:8080/api';
 
 var example = angular.module('example', ['ui.bootstrap', 'ui.utils', 'ngRoute', 'ngAnimate', 'institutions']);
 
@@ -6,23 +6,53 @@ angular.module('example').constant('host', host);
 
 angular.module('example').config(function($routeProvider) {
 
-    /* Add New Routes Above */
-    $routeProvider.otherwise({redirectTo:'/home'});
+  /* Add New Routes Above */
+  $routeProvider.otherwise({
+    redirectTo: '/home'
+  });
 
 });
 
 angular.module('example').run(function($rootScope) {
 
-    $rootScope.safeApply = function(fn) {
-        var phase = $rootScope.$$phase;
-        if (phase === '$apply' || phase === '$digest') {
-            if (fn && (typeof(fn) === 'function')) {
-                fn();
-            }
-        } else {
-            this.$apply(fn);
-        }
-    };
+  $rootScope.safeApply = function(fn) {
+    var phase = $rootScope.$$phase;
+    if (phase === '$apply' || phase === '$digest') {
+      if (fn && (typeof(fn) === 'function')) {
+        fn();
+      }
+    } else {
+      this.$apply(fn);
+    }
+  };
+});
+
+angular.module('example').controller('AppCtrl', function($scope, $modal, accounts, subscriptions, auth) {
+
+  $scope.$watch(function() {
+    return auth.getToken();
+  }, function(value) {
+    if (!value) {
+      return;
+    }
+    console.log('LogIn');
+    $scope.loggedIn = true;
+    /*
+    subscriptions.registerListener('transaction', function(event) {
+      var transaction = JSON.parse(event.data);
+      console.log('Got transaction event', transaction);
+      if ($scope.active && transaction.accountId === $scope.active.id) {
+        $scope.transactions.unshift(transaction);
+        $scope.$apply();
+      }
+    });*/
+  });
+
+  $scope.tabChange = function(type) {
+    $scope.custType = type;
+    accounts.init(type);
+  } 
+
 });
 
 $(document).ready(function() {
@@ -41,7 +71,7 @@ function onSignIn(googleUser) {
     if (xhr.status === 200) {
       var token = xhr.responseText;
       angular.element('html').injector().get('auth').setToken(token);
-      angular.element('html').injector().get('accounts').init();
+      //angular.element('html').injector().get('accounts').init();
     } else {
       console.log('Error signing in', xhr.status, xhr.responseText);
     }

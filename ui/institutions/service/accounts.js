@@ -10,10 +10,10 @@ angular.module('institutions').factory('accounts',function($http, auth, host) {
 		});
     }
 
-    function refresh(id) {
+    function refresh(id, type) {
             return $http({
                 method: 'POST',
-                url: base + 'refresh',
+                url: base + type + '/refresh',
 				headers: {
 					'Authorization' : 'Bearer ' + auth.getToken()
 				}
@@ -29,20 +29,20 @@ angular.module('institutions').factory('accounts',function($http, auth, host) {
 
         refresh: refresh, 
 
-        getTransactions: function(id) {
+        getTransactions: function(id, type) {
             return $http({
                 method: 'GET',
-                url: base + id + '/transactions',
+                url: base + type + '/' + id + '/transactions',
 				headers: {
 					'Authorization' : 'Bearer ' + auth.getToken()
 				}
             });
         },
 
-		init: function() {
+		init: function(type) {
             $http({
                 method: 'GET',
-                url: base,
+                url: base + type,
 				headers: {
 					'Authorization' : 'Bearer ' + auth.getToken()
 				}

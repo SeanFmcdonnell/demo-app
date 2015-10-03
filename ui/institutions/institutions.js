@@ -43,28 +43,15 @@ angular.module('institutions').controller('InstitutionsCtrl', function($scope, $
         });
     });
 
-    $scope.$watch(function() {
-        return auth.getToken();
-    }, function(value) {
-        if (!value) {
-            return;
-        }
-        console.log('LogIn');
-        $scope.loggedIn = true;
-        subscriptions.registerListener('transaction', function(event) {
-            var transaction = JSON.parse(event.data);
-            console.log('Got transaction event', transaction);
-            if ($scope.active && transaction.accountId === $scope.active.id) {
-                $scope.transactions.unshift(transaction);
-                $scope.$apply();
-            }
-        });
-    });
-
     $scope.open = function() {
         $modal.open({
             templateUrl: 'institutions/partial/select-institution/select-institution.html',
-            controller: 'SelectInstitutionCtrl'
+            controller: 'SelectInstitutionCtrl',
+            resolve: {
+                type: function() {
+                    return $scope.custType;
+                }
+            }
         });
     };
 

@@ -1,4 +1,4 @@
-angular.module('institutions').controller('SelectInstitutionCtrl', function($scope, $modalInstance, institutions, accounts){
+angular.module('institutions').controller('SelectInstitutionCtrl', function($scope, $modalInstance, institutions, accounts, type){
 
     $scope.search = null;
     $scope.total = 0;
@@ -22,7 +22,10 @@ angular.module('institutions').controller('SelectInstitutionCtrl', function($sco
 
     function discover(result) {
         var data = result.data;
-        if (data['account']) {
+        if(data['code']) {
+            $scope.error = data;
+            $scope.state = 'error';
+        } else if (data['account']) {
             accounts.addAccounts(data['account']);
             $modalInstance.dismiss();
             accounts.refresh();
@@ -55,10 +58,10 @@ angular.module('institutions').controller('SelectInstitutionCtrl', function($sco
     $scope.progress = function() {
         var id = $scope.institution;
         if ($scope.state === 'login') {
-            institutions.discoverAccounts(id, $scope.login).then(discover);
+            institutions.discoverAccounts(id, $scope.login, type).then(discover);
         } else if ($scope.state === 'mfa') {
             console.log('Response', $scope.questions);
-            institutions.discoverAccountsMfa(id, $scope.questions).then(discover);
+            institutions.discoverAccountsMfa(id, $scope.questions, type).then(discover);
         }
     };
 });

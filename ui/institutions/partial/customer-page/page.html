@@ -1,0 +1,36 @@
+<div class="row row-offcanvas row-offcanvas-left" ng-controller="InstitutionsCtrl">
+
+	<!-- sidebar -->
+	<div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">
+		<ul class="nav">
+			<li id="{{account.id}}" ng-class="{active: account.id === active.id}" ng-repeat="account in accounts">
+				<a ng-click="setActive(account)">{{account.name}} ({{account.id}})</a>
+			</li>
+			<li><button type="button" class="btn btn-primary btn-block" ng-click="open()">
+				Add
+			</button></li>
+		</ul>
+	</div>
+
+	<!-- main area -->
+	<div class="col-xs-12 col-sm-9">
+		<h1 class="page-header">{{active.name}} : $ {{active.balance}}</h1>
+		<h2>Transactions</h2>
+		<div class="table-responsive">
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<th>Description</th>
+						<th>Amount</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="transaction in transactions">
+						<td>{{transaction.description}}</td>
+						<td>{{transaction.amount}}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div><!-- /.col-xs-12 main -->
+</div><!--/.row-->
