@@ -36,13 +36,18 @@ public class SubscriptionResource {
     private final Map<String, EventOutput> outputs = Maps.newHashMap();
 
     @POST
+    @Path("{type}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Subscriptions createSubscription(@Auth User user, String accountId, @Context UriInfo info) {
+    public Subscriptions createSubscription(
+            @Auth User user,
+            @PathParam("type") final String type,
+            String accountId,
+            @Context UriInfo info) {
         URI callback = info.getRequestUriBuilder()
                 .path("callback")
                 .build();
-        return client.createSubscription(user.getFinicityId(), accountId, callback.toASCIIString());
+        return client.createSubscription(user.getId(type), accountId, callback.toASCIIString());
     }
 
     @POST
@@ -81,20 +86,23 @@ public class SubscriptionResource {
     public EventOutput getServerSentEvents(@QueryParam("token") String token) {
         final EventOutput eventOutput = new EventOutput();
         User user = auth.getUser(token);
-        Optional.ofNullable(outputs.get(user.getFinicityId())).ifPresent(output -> {
+        Optional.ofNullable(outputs.get(user.getId("active"))).ifPresent(output -> {
             try {
                 output.close();
             } catch (IOException e) {
                 log.error("Error closing output", e);
             }
         });
-        outputs.put(user.getFinicityId(), eventOutput);
+        outputs.put(user.getId("active"), eventOutput);
         return eventOutput;
     }
 
     @DELETE
-    @Path("{id}")
-    public void delete(@Auth User user, @PathParam("id") String id) {
-        client.deleteSubscription(user.getFinicityId(), id);
+    @Path("{type}/{id}")
+    public void delete(
+            @Auth User user,
+            @PathParam("type") final String type,
+            @PathParam("id") String id) {
+        client.deleteSubscription(user.getId("type"), id);
     }
 }

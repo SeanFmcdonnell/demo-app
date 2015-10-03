@@ -7,10 +7,7 @@ import com.finicity.example.api.User;
 import io.dropwizard.auth.Auth;
 import lombok.AllArgsConstructor;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
+import javax.ws.rs.*;
 
 /**
  * Created by jhutchins on 9/28/15.
@@ -21,19 +18,23 @@ public class AccountsResource {
     private final FinicityClient client;
 
     @GET
-    public Accounts getAccounts(@Auth User user) {
-        return client.getCustomerAccounts(user.getFinicityId());
+    @Path("{type}")
+    public Accounts getAccounts(@Auth User user, @PathParam("type") final String type) {
+        return client.getCustomerAccounts(user.getId(type));
     }
 
     @POST
-    @Path("refresh")
-    public Accounts refresh(@Auth User user) {
-        return client.refreshAccounts(user.getFinicityId());
+    @Path("{type}/refresh")
+    public Accounts refresh(@Auth User user, @PathParam("type") final String type) {
+        return client.refreshAccounts(user.getId(type));
     }
 
     @GET
-    @Path("{id}/transactions")
-    public Transactions getTransactions(@Auth User user, @PathParam("id") String id) {
-        return client.getTransactions(user.getFinicityId(), id);
+    @Path("{type}/{id}/transactions")
+    public Transactions getTransactions(
+            @Auth User user,
+            @PathParam("id") String id,
+            @PathParam("type") final String type) {
+        return client.getTransactions(user.getId(type), id);
     }
 }

@@ -39,7 +39,7 @@ public class GoogleResource {
 //        if (idToken != null) {
 //            final GoogleIdToken.Payload payload = idToken.getPayload();
 //            log.info("User ID: {}", payload.getSubject());
-//            final String finicityId = getFinicityId(payload.getSubject());
+//            final String finicityId = getFinicityIds(payload.getSubject());
 //            User user = User.builder()
 //                    .finicityId(finicityId)
 //                    .googleId(payload.getSubject())
@@ -50,22 +50,33 @@ public class GoogleResource {
 //            log.error("Invalid ID token {}", idTokenString);
 //        }
 //        return result;
-        final String finicityId = getFinicityId(idTokenString);
+        final String[] finicityIds = getFinicityIds(idTokenString);
         User user = User.builder()
-                .finicityId(finicityId)
+                .activeId(finicityIds[0])
+                .testingId(finicityIds[1])
                 .googleId(idTokenString)
                 .build();
         return auth.registerUser(user);
     }
 
-    private String getFinicityId(String googleId) {
+    private String[] getFinicityIds(String googleId) {
         final Customers customers = client.getCustomers(googleId, 1, 1);
         List<Customer> list = customers.getList();
+        String[] ids = new String[2];
         if (list == null || list.size() == 0) {
-           return client.createTestCustomer(googleId, "first", "last").getId();
+            ids[0] = client.createActiveCustomer(googleId, "first", "last").getId();
+            ids[1] = client.createTestCustomer(googleId, "first", "last").getId();
+        } else {
+            for(Customer cust : list) {
+                String type = cust.getUsername().split("-")[1];
+                if(type.equals("active")) {
+                    ids[0] = cust.getId();
+                }
+                else if(type.equals("testing")) {
+                    ids[1] = cust.getId();
+                }
+            }
         }
-        else {
-           return customers.getList().get(0).getId();
-        }
+        return ids;
     }
 }

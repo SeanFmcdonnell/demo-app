@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.NotEmpty;
 
+import java.util.List;
+
 /**
  * Created by jhutchins on 9/25/15.
  */
@@ -12,10 +14,16 @@ import org.hibernate.validator.constraints.NotEmpty;
 @Builder
 public class User {
     @NotEmpty
-    private final String finicityId;
+    private final String activeId;
+    @NotEmpty
+    private final String testingId;
     @NotEmpty
     private final String googleId;
     private final String email;
     @Setter
     private String currentMfa;
+
+    public String getId(String type) {
+        return (type.equals("active")) ? getActiveId() : getTestingId();
+    }
 }
