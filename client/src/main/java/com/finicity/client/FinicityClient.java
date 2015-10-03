@@ -1,5 +1,6 @@
 package com.finicity.client;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
@@ -19,6 +20,8 @@ import java.beans.ConstructorProperties;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -33,12 +36,16 @@ public class FinicityClient {
     private final WebTarget target;
     private final XmlMapper xmlMapper = new XmlMapper();
 
+    private final List<Integer> errorCodes = Arrays.asList(
+            Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
+            Response.Status.FORBIDDEN.getStatusCode());
+
     private String token = null;
     private Instant tokenExpiration = Instant.now();
 
     @ConstructorProperties({"partnerId", "partnerSecret", "finicityAppKey", "client"})
     private FinicityClient(String partnerId, String partnerSecret, String finicityAppKey, Client client) {
-        xmlMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,  false);
+        xmlMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         xmlMapper.findAndRegisterModules();
         JacksonJaxbXMLProvider provider = new JacksonJaxbXMLProvider();
         provider.setMapper(xmlMapper);
@@ -131,17 +138,28 @@ public class FinicityClient {
 
     private ActivationResponse extractResponse(Response response) {
         final String xml = response.readEntity(String.class);
-        ActivationResponseBody body;
-        try {
-            body = xmlMapper.readValue(xml, Accounts.class);
-        } catch (Exception e) {
-            log.debug("Error mapping to Accounts object", e);
+        log.debug("Response Status: " + response.getStatus());
+        ActivationResponseBody body = null;
+        if (errorCodes.contains(response.getStatus())) {
             try {
-                body = xmlMapper.readValue(xml, MfaChallenges.class);
-            } catch (IOException e1) {
-                throw new RuntimeException(e1);
+                body = xmlMapper.readValue(xml, ErrorMessage.class);
+                log.info("Error Occured. Raw XML: " + xml);
+            } catch (IOException e) {
+                log.debug("Unable to map error message. XML: " + xml);
+            }
+        } else {
+            try {
+                body = xmlMapper.readValue(xml, Accounts.class);
+            } catch (Exception e1) {
+                log.debug("Error mapping to Accounts object", e1);
+                try {
+                    body = xmlMapper.readValue(xml, MfaChallenges.class);
+                } catch (IOException e2) {
+                    throw new RuntimeException(e2);
+                }
             }
         }
+
         ActivationResponse.Builder builder = ActivationResponse.builder()
                 .body(body);
         if (response.getStatus() == 203) {
@@ -171,10 +189,23 @@ public class FinicityClient {
                 .get(Customers.class);
     }
 
-    public Customer createTestCustomer(String username, String firstName, String lastName) {
-       validateToken();
+    public Customer createActiveCustomer(String username, String firstName, String lastName) {
+        validateToken();
         final Customer customer = new Customer();
-        customer.setUsername(username);
+        customer.setUsername(username + "-active");
+        customer.setFirstName(firstName);
+        customer.setLastName(lastName);
+        return target.path("/v1/customers/active")
+                .request(MediaType.APPLICATION_XML_TYPE)
+                .header("Finicity-App-Key", finicityAppKey)
+                .header("Finicity-App-Token", token)
+                .post(Entity.entity(customer, MediaType.APPLICATION_XML_TYPE), Customer.class);
+    }
+
+    public Customer createTestCustomer(String username, String firstName, String lastName) {
+        validateToken();
+        final Customer customer = new Customer();
+        customer.setUsername(username + "-testing");
         customer.setFirstName(firstName);
         customer.setLastName(lastName);
         return target.path("/v1/customers/testing")
