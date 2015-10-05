@@ -1,4 +1,4 @@
-# README #
+# Finicity DS API Demo App #
 
 ### What is this repository for? ###
 
@@ -10,11 +10,31 @@
 ### How do I get set up? ###
 
 * Summary of set up
+    * Checkout this repository, or fork it
+    * 
 * Configuration
 * Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
+    * Java > 1.8
+* Dev Dependencies
+    * NPM
+        * Run ```npm install .```
+        * And ```npm install -g bower grunt```
+        * Then ```bower install```
+* Build
+    * Java
+        * Run ```mvn clean install``` from the project root
+        * This will build a fat jar in app/target
+* Dev Deployment
+    * Java
+        * Run ```java -jar app/target/app-{version}.jar server config.yml```
+    * Web
+        * Run ```grunt serve``` from ui
+* Deployment
+    * Java
+        * Same as above. Optional: setup a job to run it
+    * Web
+        * Add the UI folder as the html root
+        * See demo-app.conf for a sample nginx config
 
 ### Contribution guidelines ###
 
