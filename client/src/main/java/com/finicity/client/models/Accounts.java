@@ -5,6 +5,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -13,7 +14,13 @@ import java.util.List;
 @Data
 @JacksonXmlRootElement(localName = "accounts")
 public class Accounts implements ActivationResponseBody {
+    @JsonProperty("institutions")
+    private List<String> institutions = new ArrayList<>();
     @JsonProperty("account")
     @JacksonXmlElementWrapper(useWrapping = false)
     private List<Account> list;
+
+    public void addInstitution(String institution) {
+        this.institutions.add(institution);
+    }
 }

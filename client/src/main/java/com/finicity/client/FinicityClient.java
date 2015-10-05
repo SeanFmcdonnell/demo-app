@@ -127,13 +127,29 @@ public class FinicityClient {
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
-        final Response response = target.path("/v1/customers/" + customerId + "/institutions/" + institutionId + "/accounts/addall/mfa")
+        final Response rawResponse = target.path("/v1/customers/" + customerId + "/institutions/" + institutionId + "/accounts/addall/mfa")
                 .request(MediaType.APPLICATION_XML_TYPE)
                 .header("Finicity-App-Key", finicityAppKey)
                 .header("Finicity-App-Token", token)
                 .header("MFA-Session", session)
                 .post(Entity.entity(str, MediaType.APPLICATION_XML_TYPE));
-        return extractResponse(response);
+
+        ActivationResponse response = extractResponse(rawResponse);
+        try {
+            Accounts accounts = (Accounts) response.getBody();
+            if (accounts.getList() != null) {
+                for (Account account : accounts.getList()) {
+                    if (!accounts.getInstitutions().contains(account.getInstitutionId())) {
+                        accounts.addInstitution(account.getInstitutionId());
+                    }
+                }
+            }
+            response.setBody(accounts);
+            return response;
+        } catch (Exception ex) {
+            log.info("Message: " + ex.getMessage());
+            return response;
+        }
     }
 
     private ActivationResponse extractResponse(Response response) {
@@ -170,11 +186,20 @@ public class FinicityClient {
 
     public Accounts getCustomerAccounts(String customerId) {
         validateToken();
-        return target.path("/v1/customers/" + customerId + "/accounts/")
+        Accounts accounts = target.path("/v1/customers/" + customerId + "/accounts/")
                 .request(MediaType.APPLICATION_XML_TYPE)
                 .header("Finicity-App-Key", finicityAppKey)
                 .header("Finicity-App-Token", token)
                 .get(Accounts.class);
+        if (accounts.getList() == null) {
+            return accounts;
+        }
+        for (Account account : accounts.getList()) {
+            if (!accounts.getInstitutions().contains(account.getInstitutionId())) {
+                accounts.addInstitution(account.getInstitutionId());
+            }
+        }
+        return accounts;
     }
 
     public Customers getCustomers(String search, int start, int limit) {
@@ -248,11 +273,38 @@ public class FinicityClient {
 
     public Accounts refreshAccounts(String customerId) {
         validateToken();
-        return target.path("/v1/customers/" + customerId + "/accounts/")
+        Accounts accounts = target.path("/v1/customers/" + customerId + "/accounts/")
                 .request(MediaType.APPLICATION_XML_TYPE)
                 .header("Finicity-App-Key", finicityAppKey)
                 .header("Finicity-App-Token", token)
                 .post(null, Accounts.class);
+        if (accounts.getList() == null) {
+            return accounts;
+        }
+        for (Account account : accounts.getList()) {
+            if (!accounts.getInstitutions().contains(account.getInstitutionId())) {
+                accounts.addInstitution(account.getInstitutionId());
+            }
+        }
+        return accounts;
+    }
+
+    public Account refreshAccount(String customerId, String accountId) {
+        validateToken();
+        return target.path("/v1/customers/" + customerId + "/accounts/" + accountId)
+                .request(MediaType.APPLICATION_XML_TYPE)
+                .header("Finicity-App-Key", finicityAppKey)
+                .header("Finicity-App-Token", token)
+                .post(null, Account.class);
+    }
+
+    public Response deleteAccount(String customerId, String accountId) {
+        validateToken();
+        return target.path("/v1/customers/" + customerId + "/accounts/" + accountId)
+                .request(MediaType.APPLICATION_XML_TYPE)
+                .header("Finicity-App-Key", finicityAppKey)
+                .header("Finicity-App-Token", token)
+                .delete();
     }
 
     @Setter
