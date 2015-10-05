@@ -34,7 +34,7 @@
         * Same as above. Optional: setup a job to run it
     * Web
         * Add the UI folder as the html root
-        * See demo-app.conf for a sample nginx config
+        * See [demo-app.sample](demo-app.sample) for a sample nginx config
 
 ### Contribution guidelines ###
 
