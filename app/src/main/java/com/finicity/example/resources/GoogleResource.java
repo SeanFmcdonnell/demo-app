@@ -60,7 +60,7 @@ public class GoogleResource {
     }
 
     private String[] getFinicityIds(String googleId) {
-        final Customers customers = client.getCustomers(googleId, 1, 1);
+        final Customers customers = client.getCustomers(googleId, 1, 2);
         List<Customer> list = customers.getList();
         String[] ids = new String[2];
         if (list == null || list.size() == 0) {

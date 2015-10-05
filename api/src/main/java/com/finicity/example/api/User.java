@@ -4,9 +4,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.NotEmpty;
-
-import java.util.List;
-
 /**
  * Created by jhutchins on 9/25/15.
  */
@@ -24,6 +21,6 @@ public class User {
     private String currentMfa;
 
     public String getId(String type) {
-        return (type.equals("active")) ? getActiveId() : getTestingId();
+        return (type.equals("active")) ? activeId : testingId;
     }
 }
