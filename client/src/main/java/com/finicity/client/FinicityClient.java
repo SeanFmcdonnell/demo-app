@@ -103,20 +103,34 @@ public class FinicityClient {
 
     public ActivationResponse addAllAccounts(String customerId, int institutionId, List<LoginField> fields) {
         validateToken();
-        AccountCredentials account = new AccountCredentials();
-        account.setList(fields);
+        AccountCredentials accountCreds = new AccountCredentials();
+        accountCreds.setList(fields);
         String str;
         try {
-            str = xmlMapper.writeValueAsString(account);
+            str = xmlMapper.writeValueAsString(accountCreds);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
-        final Response response = target.path("/v1/customers/" + customerId + "/institutions/" + institutionId + "/accounts/addall")
+        final Response rawResponse = target.path("/v1/customers/" + customerId + "/institutions/" + institutionId + "/accounts/addall")
                 .request(MediaType.APPLICATION_XML_TYPE)
                 .header("Finicity-App-Key", finicityAppKey)
                 .header("Finicity-App-Token", token)
                 .post(Entity.entity(str, MediaType.APPLICATION_XML_TYPE));
-        return extractResponse(response);
+        ActivationResponse response = extractResponse(rawResponse);
+        try {
+            Accounts accounts = (Accounts) response.getBody();
+            if (accounts.getList() != null) {
+                for (Account account : accounts.getList()) {
+                    if (!accounts.getInstitutions().contains(account.getInstitutionId())) {
+                        accounts.addInstitution(account.getInstitutionId());
+                    }
+                }
+            }
+            response.setBody(accounts);
+            return response;
+        } catch (Exception ex) {
+            return response;
+        }
     }
 
     public ActivationResponse addAllAccounts(String customerId, int institutionId, MfaChallenges challenges, String session) {
@@ -147,14 +161,13 @@ public class FinicityClient {
             response.setBody(accounts);
             return response;
         } catch (Exception ex) {
-            log.info("Message: " + ex.getMessage());
             return response;
         }
     }
 
     private ActivationResponse extractResponse(Response response) {
         final String xml = response.readEntity(String.class);
-        log.debug("Response Status: " + response.getStatus());
+        log.info(xml);
         ActivationResponseBody body = null;
         if (errorCodes.contains(response.getStatus())) {
             try {
@@ -163,16 +176,19 @@ public class FinicityClient {
             } catch (IOException e) {
                 log.debug("Unable to map error message. XML: " + xml);
             }
+        } else if (response.getStatus() == 203) {
+            try {
+                body = xmlMapper.readValue(xml, MfaChallenges.class);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                body = ErrorMessage.builder().message("Unable to map MFA response. Message: " + ex.getMessage()).build();
+            }
         } else {
             try {
                 body = xmlMapper.readValue(xml, Accounts.class);
-            } catch (Exception e1) {
-                log.debug("Error mapping to Accounts object", e1);
-                try {
-                    body = xmlMapper.readValue(xml, MfaChallenges.class);
-                } catch (IOException e2) {
-                    throw new RuntimeException(e2);
-                }
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                body = ErrorMessage.builder().message("Unable to map Account response. Message: " + ex.getMessage()).build();
             }
         }
 
