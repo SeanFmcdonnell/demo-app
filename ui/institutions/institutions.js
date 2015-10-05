@@ -89,5 +89,5 @@ angular.module('institutions').controller('InstitutionsCtrl', function($scope, $
     accounts.refreshAccount($scope.active.id, $scope.custType).then(function(result) {
       $scope.loading = false;
     });
-  }
+  };
 });
