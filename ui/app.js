@@ -50,8 +50,9 @@ angular.module('example').controller('AppCtrl', function($scope, $modal, account
 
   $scope.tabChange = function(type) {
     $scope.custType = type;
+    accounts.resetAccounts();
     accounts.init(type);
-  } 
+  };
 
 });
 
@@ -71,10 +72,17 @@ function onSignIn(googleUser) {
     if (xhr.status === 200) {
       var token = xhr.responseText;
       angular.element('html').injector().get('auth').setToken(token);
-      //angular.element('html').injector().get('accounts').init();
+      angular.element('html').injector().get('accounts').init('active');
     } else {
       console.log('Error signing in', xhr.status, xhr.responseText);
     }
   };
   xhr.send(id_token);
+}
+
+function signOut() {
+  gapi.auth2.getAuthInstance().signOut().then(function() {
+    console.log('Signed out.');
+    window.location.reload();
+  });
 }

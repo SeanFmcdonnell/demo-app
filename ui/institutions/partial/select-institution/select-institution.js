@@ -1,8 +1,9 @@
-angular.module('institutions').controller('SelectInstitutionCtrl', function($scope, $modalInstance, institutions, accounts, type){
+angular.module('institutions').controller('SelectInstitutionCtrl', function($scope, $modalInstance, institutions,
+    accounts, type) {
 
     $scope.search = null;
     $scope.total = 0;
-    $scope.page= 1;
+    $scope.page = 1;
     $scope.institutions = [];
     $scope.state = 'select';
 
@@ -22,15 +23,18 @@ angular.module('institutions').controller('SelectInstitutionCtrl', function($sco
 
     function discover(result) {
         var data = result.data;
-        if(data['code']) {
+        if (data['code']) {
             $scope.error = data;
             $scope.state = 'error';
         } else if (data['account']) {
-            accounts.addAccounts(data['account']);
+            accounts.addAccounts(data);
             $modalInstance.dismiss();
-            accounts.refresh();
-        }
-        else {
+        } else if (data.account == null) {
+            $scope.error = {
+                message: 'No account data returned.'
+            };
+            $scope.state = 'error';
+        } else {
             $scope.state = 'mfa';
             console.log(data['question']);
             $scope.questions = data['question'];

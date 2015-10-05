@@ -22,7 +22,7 @@ angular.module('institutions').factory('institutions', function($http, host, aut
 			});
 		},
 
-		discoverAccountsMfa: function(id, questions) {
+		discoverAccountsMfa: function(id, questions, type) {
 			return $http({
 				method: 'POST',
 				url: base + type + '/' + id + '/discover/mfa',
