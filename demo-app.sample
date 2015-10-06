@@ -1,19 +1,13 @@
 server {
-        listen 9001 default_server;
-        listen [::]:9001 default_server ipv6only=on;
         server_name demo.finicity.com;
-        location / {
-                return 301 https://$server_name$request_uri;
-        }
-
         location /api/subscriptions/callback {
                 proxy_pass http://localhost:8080;
         }
-}
 
-server {
-        server_name demo.finicity.com;
-        return 301 https://$server_name$request_uri;
+
+	location / {
+                return 301 https://$server_name$request_uri;
+        }
 }
 
 server {
