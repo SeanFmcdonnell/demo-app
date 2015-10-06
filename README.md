@@ -36,12 +36,6 @@
         * Add the UI folder as the html root
         * See [demo-app.sample](demo-app.sample) for a sample nginx config
 
-### Contribution guidelines ###
-
-* Writing tests
-* Code review
-* Other guidelines
-
 ### Who do I talk to? ###
 
 * Connor Kuhn [connor.kuhn@finicity.com](mailto:connor.kuhn@finicity.com)
