@@ -43,7 +43,14 @@ public class InstitutionsResource {
             @PathParam("id") final int id,
             final LoginForm form) {
         ActivationResponse response = client.addAllAccounts(user.getId(type), id, form.getFields());
-        user.setCurrentMfa(response.getMfaSession());
+        if (response.getMfaSession() == null) {
+            Thread refresh = new Thread(() -> {
+                client.refreshAccounts(user.getId(type));
+            });
+            refresh.start();
+        } else {
+            user.setCurrentMfa(response.getMfaSession());
+        }
         return response.getBody();
     }
 
@@ -56,7 +63,14 @@ public class InstitutionsResource {
             @PathParam("id") final int id,
             final MfaChallenges challenges) {
         ActivationResponse response = client.addAllAccounts(user.getId(type), id, challenges, user.getCurrentMfa());
-        user.setCurrentMfa(response.getMfaSession());
+        if (response.getMfaSession() == null) {
+            Thread refresh = new Thread(() -> {
+                client.refreshAccounts(user.getId(type));
+            });
+            refresh.start();
+        } else {
+            user.setCurrentMfa(response.getMfaSession());
+        }
         return response.getBody();
     }
 }

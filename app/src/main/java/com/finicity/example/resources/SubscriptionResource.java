@@ -3,6 +3,7 @@ package com.finicity.example.resources;
 import com.finicity.client.FinicityClient;
 import com.finicity.client.models.Subscriptions;
 import com.finicity.client.models.Event;
+import com.finicity.client.models.Transaction;
 import com.finicity.example.api.User;
 import com.finicity.example.services.AuthService;
 import com.google.api.client.util.Maps;
@@ -54,9 +55,11 @@ public class SubscriptionResource {
     @Path("callback")
     @Consumes(MediaType.APPLICATION_XML)
     public void callback(Event event) {
+
         event.getTransaction().stream()
                 .filter(transaction -> outputs.get(transaction.getCustomerId()) != null)
                 .map(transaction -> {
+                    log.info(transaction.toString());
                     EventOutput output = outputs.get(transaction.getCustomerId());
                     try {
                         output.write(new OutboundEvent.Builder()
