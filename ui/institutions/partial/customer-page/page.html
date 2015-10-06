@@ -10,7 +10,7 @@
 					<span>{{institution}}</span><span class="pull-right" ng-click="deleteAll($index, institution, $event)">X</span>
 				</accordion-heading>
 				<div ng-repeat="account in accounts | filter: { institutionId: institution}">
-					<a ng-click="setActive(account)">{{account.name}}</a>
+					<a ng-click="setActive(account)">{{account.name}} ({{account.id}})</a>
 					<a class="pull-right" ng-click="deleteAccount(account.id)">X</a>
 					<hr ng-hide="$last">
 				</div>
@@ -36,8 +36,8 @@
 			<thead>
 				<tr>
 					<th>Description</th>
-					<th>Date</td>
-						<th>Amount</th>
+					<th>Date</th>
+					<th>Amount</th>
 					</tr>
 				</thead>
 				<tbody>

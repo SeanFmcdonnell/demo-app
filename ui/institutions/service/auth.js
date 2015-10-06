@@ -1,4 +1,4 @@
-angular.module('institutions').factory('auth',function() {
+angular.module('institutions').factory('auth',function($rootScope) {
 
 	var token;
 
@@ -7,9 +7,12 @@ angular.module('institutions').factory('auth',function() {
 			return token;
 		},
 
-		setToken: function(response) {
+		setToken: function(response, activeId, testingId) {
 			token = response;
 			console.log('Token set to', response);
+
+			$rootScope.activeId = activeId;
+			$rootScope.testingId = testingId;
 		}
 	};
 

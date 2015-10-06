@@ -1,6 +1,7 @@
 package com.finicity.example.resources;
 
 import com.finicity.client.FinicityClient;
+import com.finicity.client.models.AuthResponse;
 import com.finicity.client.models.Customer;
 import com.finicity.client.models.Customers;
 import com.finicity.example.api.User;
@@ -33,7 +34,7 @@ public class GoogleResource {
 
     @POST
     @Path("signin")
-    public String signin(String idTokenString) throws GeneralSecurityException, IOException {
+    public AuthResponse signin(String idTokenString) throws GeneralSecurityException, IOException {
 //        String result = null;
 //        GoogleIdToken idToken = verifier.verify(idTokenString);
 //        if (idToken != null) {
@@ -56,7 +57,12 @@ public class GoogleResource {
                 .testingId(finicityIds[1])
                 .googleId(idTokenString)
                 .build();
-        return auth.registerUser(user);
+
+        return AuthResponse.builder()
+                .token(auth.registerUser(user))
+                .activeId(finicityIds[0])
+                .testingId(finicityIds[1])
+                .build();
     }
 
     private String[] getFinicityIds(String googleId) {

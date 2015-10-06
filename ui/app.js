@@ -69,8 +69,11 @@ function onSignIn(googleUser) {
   xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
   xhr.onload = function() {
     if (xhr.status === 200) {
-      var token = xhr.responseText;
-      angular.element('html').injector().get('auth').setToken(token);
+      var doc = xhr.responseXML.getElementsByTagName('AuthResponse')[0];
+      var token = doc.getElementsByTagName('token')[0].textContent;
+      var activeId = doc.getElementsByTagName('activeId')[0].textContent;
+      var testingId = doc.getElementsByTagName('testingId')[0].textContent;
+      angular.element('html').injector().get('auth').setToken(token, activeId, testingId);
       angular.element('html').injector().get('accounts').init('active');
     } else {
       console.log('Error signing in', xhr.status, xhr.responseText);

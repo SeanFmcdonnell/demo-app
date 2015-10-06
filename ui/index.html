@@ -64,10 +64,10 @@
 
     <div class="container" ng-controller="AppCtrl">
      <tabset>
-      <tab heading="Active" select="tabChange('active')">
+      <tab heading="Active ({{activeId}})" select="tabChange('active')">
         <div  ng-include="'institutions/partial/customer-page/page.html'"></div>
       </tab>
-      <tab heading="Testing" select="tabChange('testing')">
+      <tab heading="Testing ({{testingId}})" select="tabChange('testing')">
         <div ng-include="'institutions/partial/customer-page/page.html'"></div>
       </tab>
     </tabset>
