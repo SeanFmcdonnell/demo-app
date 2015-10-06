@@ -11,10 +11,10 @@ angular.module('institutions').factory('subscriptions',function($http, auth, hos
             source.addEventListener(event, func);
         },
 
-        create: function(accountId) {
+        create: function(accountId, type) {
             return $http({
 				method: 'POST',
-				url: base,
+				url: base + type,
 				headers: {
 					'Authorization' : 'Bearer ' + auth.getToken()
 				},
@@ -22,10 +22,10 @@ angular.module('institutions').factory('subscriptions',function($http, auth, hos
 			});
         },
 
-        delete: function(subscriptionId) {
+        delete: function(subscriptionId, type) {
             return $http({
 				method: 'DELETE',
-				url: base + subscriptionId,
+				url: base + type + '/' + subscriptionId,
 				headers: {
 					'Authorization' : 'Bearer ' + auth.getToken()
 				},

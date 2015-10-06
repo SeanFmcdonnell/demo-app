@@ -51,7 +51,7 @@ angular.module('institutions').controller('InstitutionsCtrl', function($scope, $
     if (subscription !== null) {
       subscriptions.delete(subscription.id);
     }
-    subscriptions.create(value).then(function(result) {
+    subscriptions.create(value, $scope.custType).then(function(result) {
       subscription = result.data.subscription[0];
     });
   });
