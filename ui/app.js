@@ -37,7 +37,6 @@ angular.module('example').controller('AppCtrl', function($scope, $modal, account
     }
     console.log('LogIn');
     $scope.loggedIn = true;
-    /*
     subscriptions.registerListener('transaction', function(event) {
       var transaction = JSON.parse(event.data);
       console.log('Got transaction event', transaction);
@@ -45,7 +44,7 @@ angular.module('example').controller('AppCtrl', function($scope, $modal, account
         $scope.transactions.unshift(transaction);
         $scope.$apply();
       }
-    });*/
+    });
   });
 
   $scope.tabChange = function(type) {
