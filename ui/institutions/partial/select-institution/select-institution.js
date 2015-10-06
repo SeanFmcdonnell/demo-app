@@ -29,12 +29,7 @@ angular.module('institutions').controller('SelectInstitutionCtrl', function($sco
         } else if (data['account']) {
             accounts.addAccounts(data);
             $modalInstance.dismiss();
-        } else if (data.account == null) {
-            $scope.error = {
-                message: 'No account data returned.'
-            };
-            $scope.state = 'error';
-        } else {
+        } else if(data['question']){
             $scope.state = 'mfa';
             console.log(data['question']);
             $scope.questions = data['question'];

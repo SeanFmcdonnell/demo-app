@@ -1,6 +1,14 @@
-angular.module('institutions').factory('institutions', function($http, host, auth) {
+angular.module('institutions').factory('institutions', function($rootScope, $http, host, auth) {
 
 	var base = host + '/institutions/';
+
+	function start() {
+		$rootScope.loading = true;
+	}
+
+	function stop() {
+		$rootScope.loading = false;
+	}
 
 	var institutions = {
 		getInstitutions: function(page, search) {
@@ -12,6 +20,7 @@ angular.module('institutions').factory('institutions', function($http, host, aut
 		},
 
 		discoverAccounts: function(id, login, type) {
+			start();
 			return $http({
 				method: 'POST',
 				url: base + type + '/' + id + '/discover',
@@ -19,10 +28,19 @@ angular.module('institutions').factory('institutions', function($http, host, aut
 					'Authorization': 'Bearer ' + auth.getToken()
 				},
 				data: login
+			}).then(function(result) {
+				stop();
+				console.log(result);
+				return result;
+			}, function(err) {
+				stop();
+				console.log(err);
+				return err;
 			});
 		},
 
 		discoverAccountsMfa: function(id, questions, type) {
+			start();
 			return $http({
 				method: 'POST',
 				url: base + type + '/' + id + '/discover/mfa',
@@ -32,6 +50,14 @@ angular.module('institutions').factory('institutions', function($http, host, aut
 				data: {
 					question: questions
 				}
+			}).then(function(result) {
+				stop();
+				console.log(result);
+				return result;
+			}, function(err) {
+				stop();
+				console.log(err);
+				return err;
 			});
 		}
 	};
