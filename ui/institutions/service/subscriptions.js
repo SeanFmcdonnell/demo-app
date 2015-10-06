@@ -1,37 +1,49 @@
 /*globals EventSource */
-angular.module('institutions').factory('subscriptions',function($http, auth, host) {
+angular.module('institutions').factory('subscriptions', function($http, auth, host) {
 
 	var base = host + '/subscriptions/';
 
 	var subscriptions = {
-        registerListener: function(event, func){
+		registerListener: function(event, func) {
 			var url = base + 'events?token=' + auth.getToken();
 			console.log('Regstering for events at', url);
-            var source = new EventSource(url);
-            source.addEventListener(event, func);
-        },
+			var source = new EventSource(url);
+			source.addEventListener(event, func);
+		},
 
-        create: function(accountId, type) {
-            return $http({
+		create: function(accountId, type) {
+			return $http({
 				method: 'POST',
 				url: base + type,
 				headers: {
-					'Authorization' : 'Bearer ' + auth.getToken()
+					'Authorization': 'Bearer ' + auth.getToken()
 				},
 				data: accountId
+			}).then(function(result) {
+				console.log(result);
+				return result;
+			}, function(err) {
+				console.log(err);
+				return err;
 			});
-        },
+		},
 
-        delete: function(subscriptionId, type) {
-            return $http({
+		delete: function(subscriptionId, type) {
+			return $http({
 				method: 'DELETE',
 				url: base + type + '/' + subscriptionId,
 				headers: {
-					'Authorization' : 'Bearer ' + auth.getToken()
+					'Authorization': 'Bearer ' + auth.getToken()
 				},
+			}).then(function(result) {
+				console.log(result);
+				return result;
+			}, function(err) {
+				console.log(err);
+				return err;
 			});
-        }
-    };
+		}
+	};
 
 	return subscriptions;
 });
