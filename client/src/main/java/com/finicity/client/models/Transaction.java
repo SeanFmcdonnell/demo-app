@@ -1,11 +1,16 @@
 package com.finicity.client.models;
 
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.*;
 
 /**
  * Created by jhutchins on 9/28/15.
  */
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@JsonIgnoreProperties({"accountName"})
 public class Transaction {
     private String amount;
     private String bonusAmount;
@@ -25,4 +30,7 @@ public class Transaction {
     private String transactionDate;
     private String unitQuantity;
     private String unitValue;
+
+    @Setter
+    private String accountName;
 }
