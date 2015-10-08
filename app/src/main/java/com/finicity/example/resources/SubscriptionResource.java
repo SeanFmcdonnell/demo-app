@@ -52,42 +52,7 @@ public class SubscriptionResource {
     @Path("callback")
     @Consumes(MediaType.APPLICATION_XML)
     public void callback(Event event) {
-        event.getTransaction().stream()
-                .filter(transaction -> outputs.get(transaction.getCustomerId()) != null)
-                .map(transaction -> {
-                    EventOutput output = outputs.get(transaction.getCustomerId());
-                    List<Account> accounts = client.getCustomerAccounts(transaction.getCustomerId()).getList();
-                    accounts.stream()
-                            .filter(account -> account.getId().equals(transaction.getAccountId()))
-                            .map(account -> {
-                                log.info(account.getName());
-                                transaction.setAccountName(account.getName());
-                                return transaction;
-                            })
-                            .distinct()
-                            .forEach(t -> {
-                                try {
-                                    output.write(new OutboundEvent.Builder()
-                                            .mediaType(MediaType.APPLICATION_JSON_TYPE)
-                                            .name("transaction")
-                                            .data(t)
-                                            .build());
-                                    log.info("Wrote transaction [{}]", t.toString());
-                                } catch (IOException e) {
-                                    log.error("Error sending event", e);
-                                }
-
-                            });
-                    return output;
-                })
-                .distinct()
-                .forEach(output -> {
-                    try {
-                        output.close();
-                    } catch (IOException e) {
-                        log.error("Failed to close connection", e);
-                    }
-                });
+        event.send(outputs, client);
     }
 
     @GET
