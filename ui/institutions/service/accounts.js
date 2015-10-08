@@ -5,6 +5,14 @@ angular.module('institutions').factory('accounts', function($http, auth, host) {
 
   var _institutions = [];
 
+  var _transactions = [];
+
+  function updateAccountBalance(account) {
+    _accounts.filter(function(obj) {
+      return obj.id === account.id;
+    })[0].balance = account.balance;
+  }
+
   function addAccounts(data) {
     _institutions = data.institutions;
     data.account = (data.account) ? data.account : [];
@@ -102,6 +110,20 @@ angular.module('institutions').factory('accounts', function($http, auth, host) {
     });
   }
 
+  function getTransactionQueue() {
+    return _transactions;
+  }
+
+  function addToTransactionQueue(transaction) {
+    _transactions.push(transaction);
+  }
+
+  function removeFromTransactionQueue(id) {
+    _transactions = _transactions.filter(function(transaction) {
+      return transaction.id !== id;
+    });
+  }
+
   function getInstitutions() {
     return _institutions;
   }
@@ -111,9 +133,11 @@ angular.module('institutions').factory('accounts', function($http, auth, host) {
 
     Drefresh: refresh,
 
-    refreshAccount:refreshAccount,
+    refreshAccount: refreshAccount,
 
     resetAccounts: resetAccounts,
+
+    updateAccountBalance: updateAccountBalance,
 
     init: init,
 
@@ -123,8 +147,12 @@ angular.module('institutions').factory('accounts', function($http, auth, host) {
 
     removeAll: removeAll,
 
-    getTransactions: getTransactions,
-
+    transactions: {
+      get: getTransactions,
+      getQueue: getTransactionQueue,
+      addToQueue: addToTransactionQueue,
+      removeFromQueue: removeFromTransactionQueue
+    },
     getInstitutions: getInstitutions
   };
 

@@ -43,11 +43,6 @@ public class AccountEvent extends Event {
                 })
                 .distinct()
                 .forEach(output -> {
-                    try {
-                        output.close();
-                    } catch (IOException e) {
-                        log.error("Failed to close connection", e);
-                    }
                 });
     }
 }

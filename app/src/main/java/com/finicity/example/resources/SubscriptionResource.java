@@ -1,7 +1,8 @@
 package com.finicity.example.resources;
 
 import com.finicity.client.FinicityClient;
-import com.finicity.client.models.*;
+import com.finicity.client.models.Event;
+import com.finicity.client.models.Subscriptions;
 import com.finicity.example.api.User;
 import com.finicity.example.services.AuthService;
 import com.google.api.client.util.Maps;
@@ -9,7 +10,6 @@ import io.dropwizard.auth.Auth;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.glassfish.jersey.media.sse.EventOutput;
-import org.glassfish.jersey.media.sse.OutboundEvent;
 import org.glassfish.jersey.media.sse.SseFeature;
 
 import javax.inject.Singleton;
@@ -19,7 +19,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriInfo;
 import java.io.IOException;
 import java.net.URI;
-import java.util.*;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * Created by jhutchins on 9/29/15.
