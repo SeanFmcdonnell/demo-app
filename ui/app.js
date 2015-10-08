@@ -45,23 +45,44 @@ angular.module('example').controller('AppCtrl', function($scope, $modal, Notific
     }
     console.log('LogIn');
     $scope.loggedIn = true;
-    subscriptions.registerListener('transaction', function(event) {
-      var transaction = JSON.parse(event.data);
-      console.log('Got transaction event', transaction);
-
-      var msg = ['Amount: $', transaction.amount, ' | Customer Id: ', transaction.customerId, '\nDescription: ', transaction.description];
-
-      Notification.primary({
-        title: 'Recieved Transaction for ' + transaction.accountName,
-        message: msg.join('')
-      });
-
-      if ($scope.active && transaction.accountId === $scope.active.id) {
-        $scope.transactions.unshift(transaction);
-        $scope.$apply();
-      }
-    });
+    subscriptions.registerListener([{
+      name: 'transaction',
+      callback: transactionCallback
+    }, {
+      name: 'account',
+      callback: accountCallback
+    }]);
   });
+
+  function transactionCallback(event) {
+    var transaction = JSON.parse(event.data);
+    console.log('Got transaction event', transaction);
+
+    var msg = ['Amount: $', transaction.amount, ' | Customer Id: ', transaction.customerId, '\nDescription: ',
+      transaction.description
+    ];
+
+    Notification.primary({
+      title: 'Recieved Transaction for ' + transaction.accountName,
+      message: msg.join('')
+    });
+
+    //accounts.transactions.addToQueue(transaction);
+  }
+
+  function accountCallback(event) {
+    var account = JSON.parse(event.data);
+    console.log('Got account event', account);
+
+    var msg = ['Balance: $', account.balance, ' | Customer Id: ', account.customerId];
+
+    Notification.primary({
+      title: 'Recieved Account Notification for ' + account.name,
+      message: msg.join('')
+    });
+
+    accounts.updateAccountBalance(account);
+  }
 
   $scope.tabChange = function(type) {
     $scope.custType = type;
