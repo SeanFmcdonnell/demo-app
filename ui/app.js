@@ -1,6 +1,8 @@
 var host = 'http://localhost:8080/api';
 
-var example = angular.module('example', ['ui.bootstrap', 'ui.utils', 'ngRoute', 'ngAnimate', 'institutions']);
+var example = angular.module('example', ['ui.bootstrap', 'ui.utils', 'ngRoute', 'ngAnimate', 'institutions',
+  'ui-notification'
+]);
 
 angular.module('example').constant('host', host);
 
@@ -27,7 +29,13 @@ angular.module('example').run(function($rootScope) {
   };
 });
 
-angular.module('example').controller('AppCtrl', function($scope, $modal, accounts, subscriptions, auth) {
+angular.module('example').config(function(NotificationProvider) {
+  NotificationProvider.setOptions({
+    delay: 25000
+  });
+});
+
+angular.module('example').controller('AppCtrl', function($scope, $modal, Notification, accounts, subscriptions, auth) {
 
   $scope.$watch(function() {
     return auth.getToken();
@@ -40,6 +48,14 @@ angular.module('example').controller('AppCtrl', function($scope, $modal, account
     subscriptions.registerListener('transaction', function(event) {
       var transaction = JSON.parse(event.data);
       console.log('Got transaction event', transaction);
+
+      var msg = ['Amount: $', transaction.amount, ' | Customer Id: ', transaction.customerId, '\nDescription: ', transaction.description];
+
+      Notification.primary({
+        title: 'Recieved Transaction for ' + transaction.accountName,
+        message: msg.join('')
+      });
+
       if ($scope.active && transaction.accountId === $scope.active.id) {
         $scope.transactions.unshift(transaction);
         $scope.$apply();
