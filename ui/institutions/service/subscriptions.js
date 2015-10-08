@@ -4,11 +4,13 @@ angular.module('institutions').factory('subscriptions', function($http, auth, ho
 	var base = host + '/subscriptions/';
 
 	var subscriptions = {
-		registerListener: function(event, func) {
+		registerListener: function(events) {
 			var url = base + 'events?token=' + auth.getToken();
 			console.log('Regstering for events at', url);
 			var source = new EventSource(url);
-			source.addEventListener(event, func);
+			events.forEach(function(event) {
+				source.addEventListener(event.name, event.callback);
+			});
 		},
 
 		create: function(accountId, type) {

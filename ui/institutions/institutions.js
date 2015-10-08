@@ -14,6 +14,17 @@ angular.module('institutions').controller('InstitutionsCtrl', function($scope, $
   var subscription = null;
 
   $scope.$watch(function() {
+    return accounts.transactions.getQueue();
+  }, function(value) {
+    value.forEach(function(transaction) {
+      if(transaction.accountId === $scope.active.id) {
+        $scope.transactions.push(transaction);
+        accounts.transactions.removeFromQueue(transaction.id);
+      }
+    });
+  });
+
+  $scope.$watch(function() {
     return accounts.getAccounts();
   }, function(value) {
     $scope.accounts = value;
@@ -44,7 +55,7 @@ angular.module('institutions').controller('InstitutionsCtrl', function($scope, $
     if (!value) {
       return;
     }
-    accounts.getTransactions(value, $scope.custType).then(function(result) {
+    accounts.transactions.get(value, $scope.custType).then(function(result) {
       console.log('Got transactions', result.data.transaction);
       $scope.transactions = result.data.transaction || [];
     });
