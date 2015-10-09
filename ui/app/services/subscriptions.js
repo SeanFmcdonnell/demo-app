@@ -1,5 +1,5 @@
 /*globals EventSource */
-angular.module('institutions').factory('subscriptions', function($http, auth, host) {
+angular.module('services').factory('subscriptions', function($http, auth, host) {
 
 	var base = host + '/subscriptions/';
 

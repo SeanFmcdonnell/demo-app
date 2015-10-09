@@ -1,4 +1,4 @@
-angular.module('institutions').factory('auth',function($rootScope) {
+angular.module('services').factory('auth',function($rootScope) {
 
 	var token;
 

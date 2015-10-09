@@ -1,4 +1,4 @@
-angular.module('institutions').controller('SelectInstitutionCtrl', function($scope, $modalInstance, institutions,
+angular.module('add.accounts').controller('AddAccoutnsCtrl', function($scope, $modalInstance, institutions,
     accounts, type) {
 
     $scope.search = null;
@@ -23,16 +23,16 @@ angular.module('institutions').controller('SelectInstitutionCtrl', function($sco
 
     function discover(result) {
         var data = result.data;
-        if (data['code']) {
+        if (data.code) {
             $scope.error = data;
             $scope.state = 'error';
-        } else if (data['account']) {
+        } else if (data.account) {
             accounts.addAccounts(data);
             $modalInstance.dismiss();
-        } else if(data['question']){
+        } else if (data.question) {
             $scope.state = 'mfa';
-            console.log(data['question']);
-            $scope.questions = data['question'];
+            console.log(data.question);
+            $scope.questions = data.question;
         }
     }
 

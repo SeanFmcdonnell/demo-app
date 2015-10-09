@@ -1,12 +1,10 @@
-angular.module('institutions', ['ui.bootstrap', 'ui.utils', 'ngRoute', 'ngAnimate']);
-
-angular.module('institutions').config(function($routeProvider) {
+angular.module('view.accounts').config(function($routeProvider) {
 
   /* Add New Routes Above */
 
 });
 
-angular.module('institutions').controller('InstitutionsCtrl', function($scope, $modal, accounts, subscriptions, auth) {
+angular.module('view.accounts').controller('ViewAccountsCtrl', function($scope, $modal, accounts, subscriptions, auth) {
 
   $scope.accounts = accounts.getAccounts();
   $scope.active = accounts[0];
@@ -17,7 +15,7 @@ angular.module('institutions').controller('InstitutionsCtrl', function($scope, $
     return accounts.transactions.getQueue();
   }, function(value) {
     value.forEach(function(transaction) {
-      if(transaction.accountId === $scope.active.id) {
+      if (transaction.accountId === $scope.active.id) {
         $scope.transactions.push(transaction);
         accounts.transactions.removeFromQueue(transaction.id);
       }
@@ -69,8 +67,8 @@ angular.module('institutions').controller('InstitutionsCtrl', function($scope, $
 
   $scope.open = function() {
     $modal.open({
-      templateUrl: 'institutions/partial/select-institution/select-institution.html',
-      controller: 'SelectInstitutionCtrl',
+      templateUrl: 'app/components/add-accounts/add-accounts.html',
+      controller: 'AddAccountsControl',
       resolve: {
         type: function() {
           return $scope.custType;

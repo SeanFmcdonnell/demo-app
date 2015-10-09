@@ -1,4 +1,4 @@
-angular.module('institutions').factory('accounts', function($http, auth, host) {
+angular.module('services').factory('accounts', function($http, auth, host) {
 
   var _accounts = [];
   var base = host + '/accounts/';

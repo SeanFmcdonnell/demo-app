@@ -1,15 +1,16 @@
 <!DOCTYPE html>
 <html ng-app="example">
 <head>
-  <title></title>
+  <title>DEMO | Finicity DS API</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta charset="utf-8">
   <meta name="google-signin-client_id" content="730128563344-j8aes24m14abuhmr28fik638602t38cc.apps.googleusercontent.com">
+  
   <link rel="shortcut icon" href="https://finicity.com/wp-content/uploads/favicon.png" type="image/png">
 
-  <link href="app.less" type="text/css" rel="stylesheet/less">
-  <link rel="stylesheet" href="http://css-spinners.com/css/spinner/three-quarters.css" type="text/css">
+  <link href="app/app.less" type="text/css" rel="stylesheet/less">
 
+  <link rel="stylesheet" href="http://css-spinners.com/css/spinner/three-quarters.css" type="text/css">
   <link href="bower_components/angular-ui-notification/dist/angular-ui-notification.min.css" type="text/css" rel="stylesheet">
 </head>
 <body>
@@ -31,22 +32,27 @@
   <script src="bower_components/angular-ui-notification/dist/angular-ui-notification.min.js"></script>
   <!-- Add New Bower Component JS Above -->
 
-
   <!-- Main App JS -->
-  <script src="app.js"></script>
-  <script src="institutions/institutions.js"></script>
-  <script src="institutions/directive/accounts/accounts.js"></script>
-  <script src="institutions/institutions.js"></script>
-  <script src="institutions/directive/accounts/accounts.js"></script>
-  <script src="institutions/partial/select-institution/select-institution.js"></script>
-  <script src="institutions/service/institutions.js"></script>
-  <script src="institutions/service/accounts.js"></script>
-  <script src="institutions/service/auth.js"></script>
-  <script src="institutions/service/subscriptions.js"></script>
-  <!-- Add New Component JS Above -->
+  <script src="app/app.js"></script>
+  <script src="app/components/main/main.js"></script>
+  <!-- /Main App Js -->
+
+  <!-- Services -->
+  <script src="app/services/accounts.js"></script>
+  <script src="app/services/auth.js"></script>
+  <script src="app/services/institutions.js"></script>
+  <script src="app/services/subscriptions.js"></script>
+  <!-- /Services -->
+
+   <!-- View Accounts -->
+  <script src="app/components/view-accounts/view-accounts.js"></script>
+  <!-- /View Accounts -->
+
+  <!-- Add Accounts -->
+  <script src="app/components/add-accounts/add-accounts.js"></script>
+  <!-- /Add Accounts -->
 
   <div class="page-container">
-
   	<!-- top navbar -->
     <div class="navbar navbar-inverse navbar-default navbar-fixed-top" role="navigation">
       <div class="container">
@@ -65,13 +71,13 @@
       </div>
     </div>
 
-    <div class="container" ng-controller="AppCtrl">
+    <div class="container" ng-controller="MainPageCtrl">
      <tabset>
       <tab heading="Active ({{activeId}})" select="tabChange('active')">
-        <div  ng-include="'institutions/partial/customer-page/page.html'"></div>
+        <div  ng-include="'app/components/view-accounts/view-accounts.html'"></div>
       </tab>
       <tab heading="Testing ({{testingId}})" select="tabChange('testing')">
-        <div ng-include="'institutions/partial/customer-page/page.html'"></div>
+        <div ng-include="'app/components/view-accounts/view-accounts.html'"></div>
       </tab>
     </tabset>
   </div><!--/.container-->
