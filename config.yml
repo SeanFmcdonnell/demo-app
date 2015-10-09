@@ -1,0 +1,12 @@
+finicityClient:
+  partnerId: <PARTNER_ID> 
+  partnerSecret: <PARTNER_SECRET>
+  finicityAppKey: <FINICITY_APP_KEY>
+
+google:
+  clientId: <CLIENT_ID>
+  secret: <SECRECT>
+
+httpClient:
+  timeout: 5000ms
+  connectionTimeout: 5000ms
