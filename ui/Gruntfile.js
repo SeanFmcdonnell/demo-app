@@ -154,6 +154,11 @@ module.exports = function(grunt) {
             update: {
                 options: {
                     remove: ['script[data-remove!="false"]', 'link[data-remove!="false"]'],
+                    update: {
+                        selector: 'meta[name="google-signin-client_id"]',
+                        attribute: 'content',
+                        value: process.env.GOOGLE_CID
+                    },
                     append: [{
                         selector: 'body',
                         html: '<script src="app.full.min.js"></script>'
