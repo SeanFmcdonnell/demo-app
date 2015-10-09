@@ -68,7 +68,7 @@ angular.module('view.accounts').controller('ViewAccountsCtrl', function($scope, 
   $scope.open = function() {
     $modal.open({
       templateUrl: 'app/components/add-accounts/add-accounts.html',
-      controller: 'AddAccountsControl',
+      controller: 'AddAccountsCtrl',
       resolve: {
         type: function() {
           return $scope.custType;
