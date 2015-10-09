@@ -1,4 +1,4 @@
-var host = 'http://localhost:8080/api';
+var host = '/api';
 
 angular.module('main', ['ui.bootstrap', 'ui.utils', 'ngRoute', 'ngAnimate', 'ui-notification']);
 
@@ -8,11 +8,11 @@ angular.module('add.accounts', ['ui.bootstrap', 'ui.utils', 'ngRoute', 'ngAnimat
 
 angular.module('services', ['ui.bootstrap', 'ui.utils', 'ngRoute', 'ngAnimate']);
 
-var app = angular.module('app', ['main', 'services', 'view.accounts', 'add.accounts']);
+var app = angular.module('demo-app', ['main', 'services', 'view.accounts', 'add.accounts']);
 
-angular.module('app').constant('host', host);
+angular.module('demo-app').constant('host', host);
 
-angular.module('app').config(function($routeProvider) {
+angular.module('demo-app').config(function($routeProvider) {
 
   /* Add New Routes Above */
   $routeProvider.otherwise({
@@ -21,7 +21,7 @@ angular.module('app').config(function($routeProvider) {
 
 });
 
-angular.module('app').run(function($rootScope) {
+angular.module('demo-app').run(function($rootScope) {
 
   $rootScope.safeApply = function(fn) {
     var phase = $rootScope.$$phase;
