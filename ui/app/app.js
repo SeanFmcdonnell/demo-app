@@ -1,5 +1,13 @@
 var host = 'http://localhost:8080/api';
 
+angular.module('main', ['ui.bootstrap', 'ui.utils', 'ngRoute', 'ngAnimate', 'ui-notification']);
+
+angular.module('view.accounts', ['ui.bootstrap', 'ui.utils', 'ngRoute', 'ngAnimate']);
+
+angular.module('add.accounts', ['ui.bootstrap', 'ui.utils', 'ngRoute', 'ngAnimate']);
+
+angular.module('services', ['ui.bootstrap', 'ui.utils', 'ngRoute', 'ngAnimate']);
+
 var app = angular.module('app', ['main', 'services', 'view.accounts', 'add.accounts']);
 
 angular.module('app').constant('host', host);
@@ -26,14 +34,6 @@ angular.module('app').run(function($rootScope) {
     }
   };
 });
-
-angular.module('main', ['ui.bootstrap', 'ui.utils', 'ngRoute', 'ngAnimate', 'ui-notification']);
-
-angular.module('view.accounts', ['ui.bootstrap', 'ui.utils', 'ngRoute', 'ngAnimate']);
-
-angular.module('add.accounts', ['ui.bootstrap', 'ui.utils', 'ngRoute', 'ngAnimate']);
-
-angular.module('services', ['ui.bootstrap', 'ui.utils', 'ngRoute', 'ngAnimate']);
 
 $(document).ready(function() {
   $('[data-toggle=offcanvas]').click(function() {
