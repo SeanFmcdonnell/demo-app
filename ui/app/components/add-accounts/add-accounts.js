@@ -1,4 +1,4 @@
-angular.module('add.accounts').controller('AddAccoutnsCtrl', function($scope, $modalInstance, institutions,
+angular.module('add.accounts').controller('AddAccountsCtrl', function($scope, $modalInstance, institutions,
     accounts, type) {
 
     $scope.search = null;
