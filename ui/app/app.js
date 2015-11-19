@@ -1,4 +1,4 @@
-var host = '/api';
+var host = 'http://localhost:8080/api';
 
 angular.module('main', ['ui.bootstrap', 'ui.utils', 'ngRoute', 'ngAnimate', 'ui-notification']);
 
