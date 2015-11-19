@@ -81,7 +81,6 @@ public class FinicityClient {
 
     public Institutions getInstitutions(String text, int start, int limit) {
         validateToken();
-        text = text.replace(' ', '+');
         return target.path("v1/institutions")
                 .queryParam("search", text)
                 .queryParam("start", start)
